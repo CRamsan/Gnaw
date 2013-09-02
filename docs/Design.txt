@@ -1,0 +1,50 @@
+The process of sending a package is as follows
+ - Resource Selection
+ - Discovery
+ - Transmission Parameters
+ - User Confirmation
+ - Data Transmission
+   - Multiple connections will be used when possible
+ - Data Handling
+
+Resource Selection
+Each client application should handle the way to recieve a reference to the resource that wants to be shared based on their os and data type.
+
+Discovery
+Each peer will remain hidden until they request to be visible. UDP will be used to broadcast data and identify information regarding each 
+peer. The most inportant information is the ip address of the other peer.
+
+Transmission Parameters
+Once the ip of peers has been found a TCP connection is stablished and data regarding the peer's indentities and the intention of the 
+transmission. Here is where the metadata of the data to be transmitted will be shared. This will allow didferent programs to know how the 
+data needs to be handled.
+
+User Confirmation
+The recieving peer is prompted with the appropriate information so he can make a decision if the transmission should start.
+
+Data Transmission
+Based on the data to be transmitted either a single or multiple connections will be open to send the data.
+
+Data Handling
+Each client application should handle the data acordingly to their os and data type.
+
+
+Interfaces
+ -Resource Selection
+   - Resource Listener
+
+ - Discovery Service
+   - Broadcaster
+   - Reciever
+
+ - Connection
+   - Parameters
+   - Connection
+   - Network
+
+ - User Interaction
+   - Confirmation Dialog
+
+ - Data Handling
+   - Image Handler
+   - Standart File
