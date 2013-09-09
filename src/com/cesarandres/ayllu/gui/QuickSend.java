@@ -6,11 +6,16 @@ package com.cesarandres.ayllu.gui;
 
 import com.cesarandres.ayllu.discovery.BeaconClient;
 import com.cesarandres.ayllu.discovery.BeaconServer;
-import com.cesarandres.ayllu.discovery.ClientFoundEvent;
-import com.cesarandres.ayllu.discovery.ClientFoundEventListener;
+import com.cesarandres.ayllu.discovery.event.BroadcastingEndEvent;
+import com.cesarandres.ayllu.discovery.event.BroadcastingEndEventListener;
+import com.cesarandres.ayllu.discovery.event.ClientFoundEvent;
+import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
+import com.cesarandres.ayllu.transmission.TransmissionClient;
+import com.cesarandres.ayllu.transmission.TransmissionServer;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -20,15 +25,29 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
 
     private BeaconServer beaconServer;
     private BeaconClient beaconClient;
+    private TransmissionServer transmissionServer;
+    private TransmissionClient transmissionClient;
+    private DefaultListModel listModel;
 
     /**
      * Creates new form QuickSend
      */
-    public QuickSend(BeaconClient beaconClient, BeaconServer beaconServer) {
+    public QuickSend(BeaconClient beaconClient, BeaconServer beaconServer, TransmissionClient transmissionClient, TransmissionServer transmissionServer) {
         initComponents();
         this.beaconClient = beaconClient;
         this.beaconServer = beaconServer;
+        this.transmissionClient = transmissionClient;
+        this.transmissionServer = transmissionServer;
+        this.listModel = new DefaultListModel();
+        this.jList1.setModel(listModel);
         this.beaconClient.addClientFoundEventListener(this);
+        this.beaconServer.addBroadcastingEndEventListener(new BroadcastingEndEventListener() {
+            @Override
+            public void BroadcastingEndEventOccurred(BroadcastingEndEvent evt) {
+                jToggleButton1.setSelected(false);
+                QuickSend.this.transmissionServer.stopListening();
+            }
+        });
         try {
             this.beaconClient.startListening();
         } catch (IOException ex) {
@@ -56,6 +75,8 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
         jList1 = new javax.swing.JList();
         jButton2 = new javax.swing.JButton();
         jProgressBar1 = new javax.swing.JProgressBar();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jToggleButton1 = new javax.swing.JToggleButton();
 
@@ -71,34 +92,39 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
 
         jLabel2.setText("jLabel2");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(jList1);
 
         jButton2.setText("jButton2");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
                             .addComponent(jButton2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -118,7 +144,9 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("tab1", jPanel1);
@@ -135,14 +163,14 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(194, Short.MAX_VALUE)
+                .addContainerGap(234, Short.MAX_VALUE)
                 .addComponent(jToggleButton1)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(250, Short.MAX_VALUE)
+                .addContainerGap(337, Short.MAX_VALUE)
                 .addComponent(jToggleButton1)
                 .addContainerGap())
         );
@@ -167,17 +195,26 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
         if (jToggleButton1.isSelected()) {
             try {
                 this.beaconServer.startBroadcasting();
+                this.transmissionServer.startListening();
             } catch (IOException ex) {
                 Logger.getLogger(QuickSend.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
                 this.beaconServer.stopBroadcasting();
+                this.transmissionServer.stopListening();
             } catch (InterruptedException ex) {
                 Logger.getLogger(QuickSend.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jToggleButton1MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        if(jList1.getSelectedValue() != null){
+            this.transmissionClient.startConnection((String)jList1.getSelectedValue(),"Hello");
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -189,13 +226,15 @@ public class QuickSend extends javax.swing.JFrame implements ClientFoundEventLis
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void ClientFoundEventOccurred(ClientFoundEvent evt) {
-        System.out.println(evt.getSource());
+        this.listModel.insertElementAt(evt.getSource(), 0);
     }
 }

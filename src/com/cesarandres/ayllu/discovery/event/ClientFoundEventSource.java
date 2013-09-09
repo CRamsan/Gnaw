@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cesarandres.ayllu.discovery;
+package com.cesarandres.ayllu.discovery.event;
 
 /**
  *
@@ -15,6 +15,4 @@ public interface ClientFoundEventSource {
 
     public void removeClientFoundEventListener(
             ClientFoundEventListener listener);
-
-    public void fireClientFoundEvent(ClientFoundEvent evt);
 }

@@ -4,11 +4,14 @@
  */
 package com.cesarandres.ayllu.discovery;
 
+import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
+import com.cesarandres.ayllu.discovery.event.ClientFoundEvent;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,13 +19,14 @@ import java.util.logging.Logger;
  *
  * @author cesar
  */
-class BeaconClientThread extends Thread implements ClientFoundEventSource {
+public class BeaconClientThread extends Thread {
 
     protected MulticastSocket socket;
     protected InetAddress group;
     protected boolean runFlag = false;
     protected int timeToLive = -1;
-    protected ClientFoundEventListener listener;
+    protected ArrayList<ClientFoundEventListener> listeners;
+    protected Hashtable<String, String> clientsFound;
 
     public BeaconClientThread() throws IOException {
         this("BeaconServerThread", 30);
@@ -32,10 +36,11 @@ class BeaconClientThread extends Thread implements ClientFoundEventSource {
         super(name);
         this.socket = new MulticastSocket(4446);
         this.group = InetAddress.getByName("224.0.113.0");
+        this.clientsFound = new Hashtable<>();
     }
 
-    public void setListener(ClientFoundEventListener listener) {
-        this.listener = listener;
+    public void setListener(ArrayList<ClientFoundEventListener> listeners) {
+        this.listeners = listeners;
     }
 
     @Override
@@ -55,11 +60,13 @@ class BeaconClientThread extends Thread implements ClientFoundEventSource {
                 buf = new byte[256];
                 packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
-
-                String received = new String(packet.getData());
-                fireClientFoundEvent(new ClientFoundEvent(received));
-
                 counter--;
+                if (this.clientsFound.containsKey(packet.getAddress().getHostAddress())) {
+                    continue;
+                }
+                String received = new String(packet.getData());
+                this.clientsFound.put(packet.getAddress().getHostAddress(), received);
+                fireClientFoundEvent(new ClientFoundEvent(packet.getAddress().getHostAddress()));
             } catch (IOException ex) {
                 Logger.getLogger(BeaconClientThread.class.getName()).log(Level.SEVERE, null, ex);
                 runFlag = false;
@@ -84,18 +91,7 @@ class BeaconClientThread extends Thread implements ClientFoundEventSource {
         this.socket.close();
     }
 
-    @Override
-    public void addClientFoundEventListener(ClientFoundEventListener listener) {
-        this.listeners.add(listener);
-    }
-
-    @Override
-    public void removeClientFoundEventListener(ClientFoundEventListener listener) {
-        this.listeners.remove(listener);
-    }
-
-    @Override
-    public void fireClientFoundEvent(ClientFoundEvent evt) {
+    private void fireClientFoundEvent(ClientFoundEvent evt) {
         for (ClientFoundEventListener listener : listeners) {
             listener.ClientFoundEventOccurred(evt);
         }

@@ -7,6 +7,8 @@ package com.cesarandres.ayllu;
 import com.cesarandres.ayllu.discovery.BeaconClient;
 import com.cesarandres.ayllu.discovery.BeaconServer;
 import com.cesarandres.ayllu.gui.QuickSend;
+import com.cesarandres.ayllu.transmission.TransmissionClient;
+import com.cesarandres.ayllu.transmission.TransmissionServer;
 
 /**
  *
@@ -16,6 +18,8 @@ public class AylluApplication {
 
     private static BeaconServer beaconServer;
     private static BeaconClient beaconClient;
+    private static TransmissionServer transmissionServer;
+    private static TransmissionClient transmissionClient;
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -43,11 +47,13 @@ public class AylluApplication {
 
         AylluApplication.beaconServer = new BeaconServer();
         AylluApplication.beaconClient = new BeaconClient();
-        
+        AylluApplication.transmissionClient = new TransmissionClient();
+        AylluApplication.transmissionServer = new TransmissionServer();
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new QuickSend(beaconClient, beaconServer).setVisible(true);
+                new QuickSend(beaconClient, beaconServer, transmissionClient, transmissionServer).setVisible(true);
             }
         });
     }

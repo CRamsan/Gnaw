@@ -1,9 +1,14 @@
 package com.cesarandres.ayllu.discovery;
 
+import com.cesarandres.ayllu.discovery.event.BroadcastingEndEvent;
+import com.cesarandres.ayllu.discovery.event.BroadcastingEndEventListener;
+import com.cesarandres.ayllu.discovery.event.ClientFoundEvent;
+import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +17,7 @@ public class BeaconServerThread extends Thread {
     protected DatagramSocket socket = null;
     protected boolean runFlag = false;
     protected int timeToLive = -1;
+    protected ArrayList<BroadcastingEndEventListener> listeners;
 
     public BeaconServerThread() throws IOException {
         this("BeaconServerThread", 30);
@@ -23,6 +29,10 @@ public class BeaconServerThread extends Thread {
         this.timeToLive = seconds;
     }
 
+    public void setListener(ArrayList<BroadcastingEndEventListener> listeners) {
+        this.listeners = listeners;
+    }
+
     @Override
     public void run() {
         int counter = timeToLive;
@@ -32,7 +42,7 @@ public class BeaconServerThread extends Thread {
             try {
 
                 // figure out response
-                String dString = "I am alive";
+                String dString = Integer.toString(counter);
 
                 buf = dString.getBytes();
 
@@ -51,9 +61,17 @@ public class BeaconServerThread extends Thread {
             }
         }
         this.socket.close();
+        fireBroadcastingEndEvent(new BroadcastingEndEvent("Event"));
     }
-    
+
     public void stopSignal() {
         this.runFlag = false;
+    }
+    
+    
+    private void fireBroadcastingEndEvent(BroadcastingEndEvent evt) {
+        for (BroadcastingEndEventListener listener : listeners) {
+            listener.BroadcastingEndEventOccurred(evt);
+        }
     }
 }
