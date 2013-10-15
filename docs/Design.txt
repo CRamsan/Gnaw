@@ -35,7 +35,7 @@ Interfaces
 
  - Discovery Service
    - Broadcaster
-   - Reciever
+   - Receiver
 
  - Connection
    - Parameters
@@ -47,4 +47,4 @@ Interfaces
 
  - Data Handling
    - Image Handler
-   - Standart File
+   - Standard File

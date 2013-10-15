@@ -1,0 +1,77 @@
+All messages are send using the JSON format and they follow the general design of:
+
+{
+  request:<REQUEST-IDENTIFIER>,
+  parameters:
+  {
+    <param-1>:<value 1>,
+    <param-2>:<value 2>,
+    <param-3>:<value 3>,
+    ...
+  }
+  payload:
+  {
+    <content-1>:<encoded-data>
+    <content-2>:<encoded-data>
+    ...
+  }
+}
+
+{
+  response-code:20X/40X
+  content:"...."
+}
+
+==================
+
+Request: getprofile
+Parameters:
+  view:slim/full
+payload: none
+
+Response: 20X/40X
+Content: Profile object in JSON format
+
+==================
+
+Request: message
+Parameters: 
+  content-type:text/....
+payload:
+  data:"......."
+
+Response: 20X/40X
+Content: Message about the delivery of the message
+
+==================
+
+Request: offer
+Parameters: 
+  content-type:image/file/....
+  integrity:
+  {
+    type:SHA1/...
+    signature:.....
+  }
+  file-name:<file name>
+  file-size:<file name>
+payload:
+  data:"......."/none
+
+Response: 20X/40X
+Content: Message about the delivery of the offer. The offer can be posted or it can be auto-declined
+
+====================
+
+Request: offer-response
+Parameters: 
+  action:accept/decline
+  token:<unique token>
+payload:
+  data:none
+
+Response: 20X/40X
+Content: Message about the delivery of the response. The offer may have expired. 
+
+=================
+
