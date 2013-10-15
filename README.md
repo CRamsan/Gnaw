@@ -1,4 +1,4 @@
-ayllu-java
+Gnaw
 ==========
 
-Share everything
+Share everything.
