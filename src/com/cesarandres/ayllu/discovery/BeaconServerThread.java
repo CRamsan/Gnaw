@@ -51,6 +51,7 @@ public class BeaconServerThread extends Thread {
                 packet = new DatagramPacket(buf, buf.length, group, 4446);
                 this.socket.send(packet);
                 counter--;
+                System.out.println("Pinged to address " + group.getHostAddress());
                 Thread.sleep(1000);
             } catch (IOException e) {
                 Logger.getLogger(BeaconServerThread.class.getName()).log(Level.SEVERE, null, e);
