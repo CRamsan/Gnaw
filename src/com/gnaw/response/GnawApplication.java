@@ -21,6 +21,8 @@ public class GnawApplication {
 
 	private static final String BROADCAST = "broadcast";
 	private static final String LISTEN = "listen";
+	private static final String START = "start";
+	private static final String STOP = "stop";
 	private static final String POST = "post";
 	private static final String QUIT = "quit";
 
@@ -47,6 +49,12 @@ public class GnawApplication {
 					break;
 				case LISTEN:
 					beaconClient.startListening();
+					break;
+				case START:
+					transmissionServer.startListening();
+					break;
+				case STOP:
+					transmissionServer.stopListening();
 					break;
 				case POST:
 					break;
