@@ -1,9 +1,9 @@
-package com.cesarandres.ayllu.discovery;
+package com.gnaw.discovery;
 
-import com.cesarandres.ayllu.discovery.event.BroadcastingEndEvent;
-import com.cesarandres.ayllu.discovery.event.BroadcastingEndEventListener;
-import com.cesarandres.ayllu.discovery.event.ClientFoundEvent;
-import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
+import com.gnaw.discovery.event.BroadcastingEndEvent;
+import com.gnaw.discovery.event.BroadcastingEndEventListener;
+import com.gnaw.discovery.event.ClientFoundEvent;
+import com.gnaw.discovery.event.ClientFoundEventListener;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cesarandres.ayllu.discovery.event;
+package com.gnaw.discovery.event;
 
 import java.util.EventObject;
 
@@ -10,11 +10,11 @@ import java.util.EventObject;
  *
  * @author cesar
  */
-public class BroadcastingEndEvent extends EventObject {
+public class ClientFoundEvent extends EventObject {
 
     private static final long serialVersionUID = 1L;
 
-    public BroadcastingEndEvent(String data) {
+    public ClientFoundEvent(String data) {
         super(data);
     }
 }

@@ -1,7 +1,7 @@
-package com.cesarandres.ayllu.discovery;
+package com.gnaw.discovery;
 
-import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
-import com.cesarandres.ayllu.discovery.event.ClientFoundEventSource;
+import com.gnaw.discovery.event.ClientFoundEventListener;
+import com.gnaw.discovery.event.ClientFoundEventSource;
 import java.io.IOException;
 import java.util.ArrayList;
 

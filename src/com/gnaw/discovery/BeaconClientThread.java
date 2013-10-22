@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cesarandres.ayllu.discovery;
+package com.gnaw.discovery;
 
-import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
-import com.cesarandres.ayllu.discovery.event.ClientFoundEvent;
+import com.gnaw.discovery.event.ClientFoundEventListener;
+import com.gnaw.discovery.event.ClientFoundEvent;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

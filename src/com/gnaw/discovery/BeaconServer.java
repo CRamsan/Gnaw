@@ -1,7 +1,7 @@
-package com.cesarandres.ayllu.discovery;
+package com.gnaw.discovery;
 
-import com.cesarandres.ayllu.discovery.event.BroadcastingEndEventListener;
-import com.cesarandres.ayllu.discovery.event.BroadcastingEndEventSource;
+import com.gnaw.discovery.event.BroadcastingEndEventListener;
+import com.gnaw.discovery.event.BroadcastingEndEventSource;
 import java.io.IOException;
 import java.util.ArrayList;
 

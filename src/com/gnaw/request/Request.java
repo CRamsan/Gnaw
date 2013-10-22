@@ -1,8 +1,13 @@
-package com.gnaw.response;
+package com.gnaw.request;
 
 import java.util.HashMap;
 
 public class Request {
+
+	public enum RequestIdentifier {
+		GET_PROFILE, MESSAGE, OFFER, RESPONSE, SEARCH
+	};
+
 	private String request;
 	private HashMap<String, String> parameters;
 	private HashMap<String, String> payload;

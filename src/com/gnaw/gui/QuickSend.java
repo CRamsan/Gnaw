@@ -2,16 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cesarandres.ayllu.gui;
+package com.gnaw.gui;
 
-import com.cesarandres.ayllu.discovery.BeaconClient;
-import com.cesarandres.ayllu.discovery.BeaconServer;
-import com.cesarandres.ayllu.discovery.event.BroadcastingEndEvent;
-import com.cesarandres.ayllu.discovery.event.BroadcastingEndEventListener;
-import com.cesarandres.ayllu.discovery.event.ClientFoundEvent;
-import com.cesarandres.ayllu.discovery.event.ClientFoundEventListener;
-import com.cesarandres.ayllu.transmission.TransmissionClient;
-import com.cesarandres.ayllu.transmission.TransmissionServer;
+import com.gnaw.discovery.BeaconClient;
+import com.gnaw.discovery.BeaconServer;
+import com.gnaw.discovery.event.BroadcastingEndEvent;
+import com.gnaw.discovery.event.BroadcastingEndEventListener;
+import com.gnaw.discovery.event.ClientFoundEvent;
+import com.gnaw.discovery.event.ClientFoundEventListener;
+import com.gnaw.transmission.TransmissionClient;
+import com.gnaw.transmission.TransmissionServer;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
