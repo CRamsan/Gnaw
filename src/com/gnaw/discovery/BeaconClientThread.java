@@ -30,7 +30,7 @@ public class BeaconClientThread extends Thread {
 	protected Hashtable<String, String> clientsFound;
 
 	public BeaconClientThread() throws IOException {
-		this("BeaconServerThread", 30);
+		this("BeaconClientThread", 30);
 	}
 
 	public BeaconClientThread(String name, int seconds) throws IOException {

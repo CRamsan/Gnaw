@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.gnaw.interfaces.Application;
+import com.gnaw.interfaces.DataSourceInterface;
 
 /**
  * 
@@ -20,9 +20,9 @@ public class TransmissionServer {
 
 	private static TransmissionServerListeningThread listeningThread;
 	private static ServerSocket serverSocket;
-	private Application application;
+	private DataSourceInterface application;
 
-	public TransmissionServer(Application application) {
+	public TransmissionServer(DataSourceInterface application) {
 		this.application = application;
 	}
 

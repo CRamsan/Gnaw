@@ -2,7 +2,7 @@ package com.gnaw.interfaces;
 
 import com.gnaw.Profile;
 
-public interface Application {
+public interface DataSourceInterface {
 	public Profile getProfile();
 
 	public boolean deliverMessage();

@@ -20,7 +20,7 @@ public class BeaconServerThread extends Thread {
     protected ArrayList<BroadcastingEndEventListener> listeners;
 
     public BeaconServerThread() throws IOException {
-        this("BeaconServerThread", 30);
+        this("BeaconServerThread", 300);
     }
 
     public BeaconServerThread(String name, int seconds) throws IOException {

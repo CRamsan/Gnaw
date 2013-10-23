@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import com.gnaw.Profile;
-import com.gnaw.interfaces.Application;
+import com.gnaw.interfaces.DataSourceInterface;
 import com.gnaw.request.Request;
 import com.gnaw.response.Response;
 import com.google.gson.Gson;
@@ -23,10 +23,10 @@ import com.google.gson.Gson;
 public class TransmissionServerThread extends Thread {
 
 	private Socket socket = null;
-	private Application application;
+	private DataSourceInterface application;
 	private static final Gson gson = new Gson();
 
-	public TransmissionServerThread(Socket socket, Application application) {
+	public TransmissionServerThread(Socket socket, DataSourceInterface application) {
 		super("KKMultiServerThread");
 		this.socket = socket;
 		this.application = application;
