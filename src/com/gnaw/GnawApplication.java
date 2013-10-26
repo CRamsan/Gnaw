@@ -58,4 +58,12 @@ public class GnawApplication {
 		}
 		return false;
 	}
+
+	public boolean searchFile(String term) {
+		return true;
+	}
+
+	public void setDiscoverableTime(int value) {
+		this.beaconServer.startBroadcasting(value);
+	}
 }

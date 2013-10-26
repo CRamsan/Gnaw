@@ -27,17 +27,61 @@ import com.gnaw.response.Response;
  */
 public abstract class GnawApplicationInterface {
 
+	/**
+	 * This method will post a request for profile information to a remote client. 
+	 * The remote client will respond immediately. 
+	 * 
+	 * @return a Response object with the profile requested
+	 */
 	public abstract Response requestProfile();
 
+	/**
+	 * This method will post a request for the shared files of a remote client. 
+	 * The remote client will respond immediately. 
+	 * 
+	 * @return a Response object with the shared files requested
+	 */
 	public abstract Response requestSharedFiles();
 
+	/**
+	 * This method will send a message to a remote client. The client will respond 
+	 * immediately with a response about the delivery of the message.
+	 * 
+	 * @return Response with the information about the delivery of the message.
+	 */
 	public abstract Response sendMessage();
 
+	/**
+	 * This method will send a file offer to a remote client. The client will respond
+	 * immediately with a response about the delivery of the offer.
+	 * 
+	 * @return Response with the information about the delivery of the offer.
+	 */
 	public abstract Response sendOffer();
 
+	/**
+	 * This method will send a response to a previous offer request to a remote client. 
+	 * The client will respond immediately with a response about the delivery of the offer
+	 * response.
+	 * 
+	 * @return Response with the information about the delivery of the offer response.
+	 */
 	public abstract Response sendOfferResponse();
 
+	/**
+	 * This method will send a search request to a remote client. The client will respond 
+	 * immediately with a response about the delivery of the request.
+	 * 
+	 * @return Response with the information about the delivery of the request.
+	 */
 	public abstract Response sendSearchRequest();
 
+	/**
+	 * This method will send a message with the search results to a remote client that sent 
+	 * a search request. The client will respond immediately with a response about the delivery
+	 * of the message.
+	 * 
+	 * @return Response with the information about the delivery of the message.
+	 */
 	public abstract Response sendSearchResult();
 }

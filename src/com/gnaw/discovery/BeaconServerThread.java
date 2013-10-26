@@ -20,11 +20,11 @@ public class BeaconServerThread extends Thread {
     protected ArrayList<BroadcastingEndEventListener> listeners;
 
     public BeaconServerThread() throws IOException {
-        this("BeaconServerThread", 300);
+        this(300);
     }
 
-    public BeaconServerThread(String name, int seconds) throws IOException {
-        super(name);
+    public BeaconServerThread(int seconds) throws IOException {
+        super("BeaconServerThread");
         this.socket = new DatagramSocket(4445);
         this.timeToLive = seconds;
     }
