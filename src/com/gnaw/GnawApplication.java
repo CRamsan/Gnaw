@@ -40,6 +40,7 @@ public class GnawApplication extends GnawApplicationInterface {
 		this.beaconClient = new BeaconClient();
 		this.transmissionClient = new TransmissionClient();
 		this.transmissionServer = new TransmissionServer(this.source);
+		this.transmissionServer.startListening();
 	}
 
 	public boolean startBroadcasting(BroadcastingEndEventListener listener,
