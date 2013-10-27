@@ -13,7 +13,7 @@ import com.gnaw.response.Response;
  * 
  *         REQUEST methods are send to a remote client to request for
  *         information that should be readily available. When a the application
- *         receives a GET request, the information will be inmediatly returned
+ *         receives a GET request, the information will be immediately returned
  *         on the response.
  * 
  *         SEND methods are used to communicate with remote clients and ask them
@@ -33,7 +33,7 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return a Response object with the profile requested
 	 */
-	public abstract Response requestProfile();
+	public abstract Response requestProfile(String address);
 
 	/**
 	 * This method will post a request for the shared files of a remote client. 
@@ -41,7 +41,7 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return a Response object with the shared files requested
 	 */
-	public abstract Response requestSharedFiles();
+	public abstract Response requestSharedFiles(String address);
 
 	/**
 	 * This method will send a message to a remote client. The client will respond 
@@ -49,7 +49,7 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return Response with the information about the delivery of the message.
 	 */
-	public abstract Response sendMessage();
+	public abstract Response sendMessage(String address);
 
 	/**
 	 * This method will send a file offer to a remote client. The client will respond
@@ -57,7 +57,7 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return Response with the information about the delivery of the offer.
 	 */
-	public abstract Response sendOffer();
+	public abstract Response sendOffer(String address);
 
 	/**
 	 * This method will send a response to a previous offer request to a remote client. 
@@ -66,7 +66,7 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return Response with the information about the delivery of the offer response.
 	 */
-	public abstract Response sendOfferResponse();
+	public abstract Response sendOfferResponse(String address);
 
 	/**
 	 * This method will send a search request to a remote client. The client will respond 
@@ -74,7 +74,7 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return Response with the information about the delivery of the request.
 	 */
-	public abstract Response sendSearchRequest();
+	public abstract Response sendSearchRequest(String address);
 
 	/**
 	 * This method will send a message with the search results to a remote client that sent 
@@ -83,5 +83,5 @@ public abstract class GnawApplicationInterface {
 	 * 
 	 * @return Response with the information about the delivery of the message.
 	 */
-	public abstract Response sendSearchResult();
+	public abstract Response sendSearchResult(String address);
 }

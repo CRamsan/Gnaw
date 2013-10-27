@@ -103,4 +103,12 @@ public interface DataSourceInterface {
 	 *         layer. False otherwise.
 	 */
 	public boolean postSearchResult();
+
+	public boolean deliverMessage();
+
+	public boolean deliverOffer();
+
+	public boolean deliverOfferResponse();
+
+	public boolean deliverSearchRequest();
 }

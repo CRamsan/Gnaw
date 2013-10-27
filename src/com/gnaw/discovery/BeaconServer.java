@@ -34,7 +34,9 @@ public class BeaconServer implements BroadcastingEndEventSource {
 	@Override
 	public void addBroadcastingEndEventListener(
 			BroadcastingEndEventListener listener) {
-		this.listeners.add(listener);
+		if (!this.listeners.contains(listener)) {
+			this.listeners.add(listener);
+		}
 	}
 
 	@Override

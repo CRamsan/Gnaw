@@ -61,7 +61,7 @@ public class TransmissionServerThread extends Thread {
 		}
 		switch (identifier) {
 		case GET_PROFILE:
-			return this.getProfileResponse();
+			return this.getProfileResponse(request);
 		case MESSAGE:
 			return this.processMessage();
 		case OFFER:
@@ -75,7 +75,7 @@ public class TransmissionServerThread extends Thread {
 		return null;
 	}
 
-	private Response getProfileResponse() {
+	private Response getProfileResponse(Request request) {
 		Profile profile = this.application.getProfile();
 		Response response = new Response();
 		if (profile != null) {
