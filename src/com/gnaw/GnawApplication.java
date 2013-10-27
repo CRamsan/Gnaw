@@ -103,8 +103,9 @@ public class GnawApplication extends GnawApplicationInterface {
 
 	@Override
 	public Response requestSharedFiles(String address) {
-		// TODO Auto-generated method stub
-		return null;
+		Request filesRequest = new Request();
+		filesRequest.setRequest(RequestIdentifier.GET_SHARED_FILES.toString());
+		return this.transmissionClient.startConnection(address, filesRequest);
 	}
 
 	@Override

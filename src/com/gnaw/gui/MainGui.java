@@ -6,21 +6,20 @@
 
 package com.gnaw.gui;
 
-import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
@@ -42,10 +41,7 @@ import com.gnaw.discovery.event.BroadcastingEndEventListener;
 import com.gnaw.discovery.event.ClientFoundEvent;
 import com.gnaw.discovery.event.ClientFoundEventListener;
 import com.gnaw.interfaces.DataSourceInterface;
-import com.gnaw.models.File;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import com.gnaw.models.SharedFile;
 
 /**
  * 
@@ -55,6 +51,7 @@ public class MainGui extends JFrame implements DataSourceInterface,
 		ClientFoundEventListener, BroadcastingEndEventListener {
 
 	private GnawApplication application;
+	private SharedFile sharedFiles = new SharedFile();
 
 	/**
 	 * Creates new form Main
@@ -116,9 +113,9 @@ public class MainGui extends JFrame implements DataSourceInterface,
 		jSeparator1 = new JSeparator();
 		jLabel2 = new JLabel();
 		jTextField1 = new JTextField();
-		jTextField1.setEditable(false);
+		jTextField1.setText(System.getProperty("user.home") + File.separator
+				+ "Gnaw");
 		jButton2 = new JButton();
-		jButton2.setEnabled(false);
 		jToggleButton1 = new JToggleButton();
 		jToggleButton1.addMouseListener(new MouseAdapter() {
 			@Override
@@ -156,13 +153,14 @@ public class MainGui extends JFrame implements DataSourceInterface,
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (jToggleButton2.isSelected()) {
+					sharedFiles = SharedFile.load(jTextField1.getText());
 					jTextField1.setEnabled(false);
 					jButton2.setEnabled(false);
-					jToggleButton2.setText("Enable Sharing");
+					jToggleButton2.setText("Disable Sharing");
 				} else {
 					jTextField1.setEnabled(true);
 					jButton2.setEnabled(true);
-					jToggleButton2.setText("Disable Sharing");
+					jToggleButton2.setText("Enable Sharing");
 				}
 			}
 		});
@@ -205,9 +203,9 @@ public class MainGui extends JFrame implements DataSourceInterface,
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ProfileDialog newDialog = new ProfileDialog(
-						(Profile) application.requestProfile(
-								(String) list.getSelectedValue()).getContent());
+				ProfileDialog newDialog = new ProfileDialog(application
+						.requestProfile((String) list.getSelectedValue())
+						.getProfile());
 				newDialog.setVisible(true);
 			}
 		});
@@ -216,14 +214,14 @@ public class MainGui extends JFrame implements DataSourceInterface,
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				SharedFile sharedFiles = application.requestSharedFiles(
+						(String) list.getSelectedValue()).getSharedFiles();
+				SharedFilesDialog newDialog = new SharedFilesDialog(sharedFiles);
+				newDialog.setVisible(true);
 			}
 		});
 
 		btnNewButton_2 = new JButton("Send File");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		btnNewButton_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -669,9 +667,8 @@ public class MainGui extends JFrame implements DataSourceInterface,
 	}
 
 	@Override
-	public File getSharedFiles() {
-		// TODO Auto-generated method stub
-		return null;
+	public SharedFile getSharedFiles() {
+		return this.sharedFiles;
 	}
 
 	@Override

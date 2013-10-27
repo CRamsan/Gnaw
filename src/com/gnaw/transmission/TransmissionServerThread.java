@@ -12,6 +12,7 @@ import java.net.Socket;
 
 import com.gnaw.Profile;
 import com.gnaw.interfaces.DataSourceInterface;
+import com.gnaw.models.SharedFile;
 import com.gnaw.request.Request;
 import com.gnaw.response.Response;
 import com.google.gson.Gson;
@@ -26,7 +27,8 @@ public class TransmissionServerThread extends Thread {
 	private DataSourceInterface application;
 	private static final Gson gson = new Gson();
 
-	public TransmissionServerThread(Socket socket, DataSourceInterface application) {
+	public TransmissionServerThread(Socket socket,
+			DataSourceInterface application) {
 		super("KKMultiServerThread");
 		this.socket = socket;
 		this.application = application;
@@ -62,6 +64,8 @@ public class TransmissionServerThread extends Thread {
 		switch (identifier) {
 		case GET_PROFILE:
 			return this.getProfileResponse(request);
+		case GET_SHARED_FILES:
+			return this.getSharedFilesResponse(request);
 		case MESSAGE:
 			return this.processMessage();
 		case OFFER:
@@ -79,14 +83,22 @@ public class TransmissionServerThread extends Thread {
 		Profile profile = this.application.getProfile();
 		Response response = new Response();
 		if (profile != null) {
-			response.setContent(profile);
+			response.setProfile(profile);
 			response.setCode(Response.PROFILE_FOUND);
 		} else {
 			profile = new Profile();
 			profile.setName("UNKOWN");
-			response.setContent(profile);
+			response.setProfile(profile);
 			response.setCode(Response.PROFILE_NOT_FOUND);
 		}
+		return response;
+	}
+
+	private Response getSharedFilesResponse(Request request) {
+		SharedFile sharedFilesd = this.application.getSharedFiles();
+		Response response = new Response();
+		response.setSharedFiles(sharedFilesd);
+		response.setCode(Response.SHARED_FILES_FOUND);
 		return response;
 	}
 
@@ -94,10 +106,10 @@ public class TransmissionServerThread extends Thread {
 		boolean delivered = this.application.deliverMessage();
 		Response response = new Response();
 		if (delivered) {
-			response.setContent("Delivered");
+			response.setMessage("Delivered");
 			response.setCode(Response.MESSAGE_DELIVERED);
 		} else {
-			response.setContent("Not Delivered");
+			response.setMessage("Not Delivered");
 			response.setCode(Response.MESSAGE_NOT_DELIVERED);
 		}
 		return response;
@@ -107,10 +119,10 @@ public class TransmissionServerThread extends Thread {
 		boolean delivered = this.application.deliverOffer();
 		Response response = new Response();
 		if (delivered) {
-			response.setContent("Delivered");
+			response.setMessage("Delivered");
 			response.setCode(Response.MESSAGE_DELIVERED);
 		} else {
-			response.setContent("Not Delivered");
+			response.setMessage("Not Delivered");
 			response.setCode(Response.MESSAGE_NOT_DELIVERED);
 		}
 		return response;
@@ -120,10 +132,10 @@ public class TransmissionServerThread extends Thread {
 		boolean delivered = this.application.deliverOfferResponse();
 		Response response = new Response();
 		if (delivered) {
-			response.setContent("Delivered");
+			response.setMessage("Delivered");
 			response.setCode(Response.MESSAGE_DELIVERED);
 		} else {
-			response.setContent("Not Delivered");
+			response.setMessage("Not Delivered");
 			response.setCode(Response.MESSAGE_NOT_DELIVERED);
 		}
 		return response;
@@ -133,10 +145,10 @@ public class TransmissionServerThread extends Thread {
 		boolean delivered = this.application.deliverSearchRequest();
 		Response response = new Response();
 		if (delivered) {
-			response.setContent("Delivered");
+			response.setMessage("Delivered");
 			response.setCode(Response.MESSAGE_DELIVERED);
 		} else {
-			response.setContent("Not Delivered");
+			response.setMessage("Not Delivered");
 			response.setCode(Response.MESSAGE_NOT_DELIVERED);
 		}
 		return response;

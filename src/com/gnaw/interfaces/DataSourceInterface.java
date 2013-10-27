@@ -1,7 +1,7 @@
 package com.gnaw.interfaces;
 
 import com.gnaw.Profile;
-import com.gnaw.models.File;
+import com.gnaw.models.SharedFile;
 
 /**
  * @author cesar
@@ -44,7 +44,7 @@ public interface DataSourceInterface {
 	 * 
 	 * @return a File object containing the structure of the shared folder.
 	 */
-	public File getSharedFiles();
+	public SharedFile getSharedFiles();
 
 	/**
 	 * This method should handle a message received. If the application can not

@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class Request {
 
 	public enum RequestIdentifier {
-		GET_PROFILE, MESSAGE, OFFER, RESPONSE, SEARCH
+		GET_PROFILE, GET_SHARED_FILES, MESSAGE, OFFER, RESPONSE, SEARCH
 	};
 
 	private String request;
