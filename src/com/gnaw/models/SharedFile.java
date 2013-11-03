@@ -70,4 +70,9 @@ public class SharedFile {
 		SharedFile file = new SharedFile(root);
 		return file;
 	}
+
+	@Override
+	public String toString(){
+		return getName();
+	}
 }
