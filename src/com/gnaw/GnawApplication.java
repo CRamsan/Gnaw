@@ -41,11 +41,13 @@ public class GnawApplication {
 	private TransmissionServer transmissionServer;
 	private TransmissionClient transmissionClient;
 	private DataSourceInterface source;
-	private HashMap<String, String> requests;
+	private HashMap<String, String> sendRequests;
+	private HashMap<String, String> receiveRequests;
 
 	public GnawApplication(DataSourceInterface source) {
 		this.source = source;
-		this.requests = new HashMap<>();
+		this.sendRequests = new HashMap<>();
+		this.receiveRequests = new HashMap<>();
 	}
 
 	public void init() {
@@ -132,20 +134,18 @@ public class GnawApplication {
 		fileOffer.setToken(uuid);
 		Response response = this.transmissionClient.startConnection(address,
 				fileOffer);
-		this.requests.put(uuid,
-				file.getPath() + File.separator + file.getName());
+		this.sendRequests.put(uuid, file.getPath());
 		return response;
 	}
 
 	public Response sendOfferResponse(String address, boolean accept,
-			String filename) {
+			String filename, String token) {
 		Request offerResponse = new Request(RequestIdentifier.RESPONSE,
 				this.source.getProfile().getName());
 		if (accept) {
-			String uuid = UUID.randomUUID().toString();
 			offerResponse.setAction(Action.ACCEPT);
-			offerResponse.setToken(uuid);
-			this.requests.put(uuid, filename);
+			offerResponse.setToken(token);
+			this.receiveRequests.put(token, filename);
 		} else {
 			offerResponse.setAction(Action.REJECT);
 		}
@@ -162,20 +162,22 @@ public class GnawApplication {
 		return null;
 	}
 
-	public Response sendPushRequest(String address, String filename) {
+	public Response sendPushRequest(String address, String token) {
 		Request pushResponse = new Request(RequestIdentifier.PUSH, this.source
 				.getProfile().getName());
+		String filename = this.sendRequests.get(token);
 		File file = new File(filename);
 		pushResponse.setFileSize(file.length());
 		return this.transmissionClient.startConnection(address, pushResponse);
 	}
 
-	public void sendFile(String address, String filename,
+	public void sendFile(String address, String token,
 			TransmissionProgressInterface listener) {
 		Socket socket = null;
 
 		try {
 			socket = new Socket(address, 4444);
+			String filename = this.sendRequests.get(token);
 			File file = new File(filename);
 
 			long length = file.length();
