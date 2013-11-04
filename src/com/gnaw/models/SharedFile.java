@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class SharedFile {
 	private int size;
 	private String name;
+	private String path;
 	private boolean isFolder;
 	private ArrayList<SharedFile> sharedFiles;
 
@@ -16,6 +17,7 @@ public class SharedFile {
 
 	public SharedFile(File file) {
 		this.name = file.getName();
+		this.setPath(file.getAbsolutePath());
 		if (file.isDirectory()) {
 			this.isFolder = true;
 			this.sharedFiles = new ArrayList<SharedFile>();
@@ -75,4 +77,13 @@ public class SharedFile {
 	public String toString(){
 		return getName();
 	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 }

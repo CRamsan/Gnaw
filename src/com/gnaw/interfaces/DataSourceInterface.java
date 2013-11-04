@@ -112,6 +112,8 @@ public interface DataSourceInterface {
 	public boolean deliverOfferResponse(Request request);
 
 	public boolean deliverSearchRequest();
-	
+
 	public boolean deliverPushRequest(Request request);
+
+	public void setProgress(int status);
 }

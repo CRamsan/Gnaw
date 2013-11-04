@@ -4,15 +4,24 @@
  */
 package com.gnaw;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.UUID;
+
+import javax.xml.ws.soap.AddressingFeature.Responses;
 
 import com.gnaw.discovery.BeaconClient;
 import com.gnaw.discovery.BeaconServer;
 import com.gnaw.discovery.event.BroadcastingEndEventListener;
 import com.gnaw.discovery.event.ClientFoundEventListener;
 import com.gnaw.interfaces.DataSourceInterface;
-import com.gnaw.interfaces.GnawApplicationInterface;
+import com.gnaw.interfaces.TransmissionProgressInterface;
 import com.gnaw.models.SharedFile;
 import com.gnaw.request.Request;
 import com.gnaw.request.Request.Action;
@@ -25,16 +34,18 @@ import com.gnaw.transmission.TransmissionServer;
  * 
  * @author cesar
  */
-public class GnawApplication extends GnawApplicationInterface {
+public class GnawApplication {
 
 	private BeaconServer beaconServer;
 	private BeaconClient beaconClient;
 	private TransmissionServer transmissionServer;
 	private TransmissionClient transmissionClient;
 	private DataSourceInterface source;
+	private HashMap<String, String> requests;
 
 	public GnawApplication(DataSourceInterface source) {
 		this.source = source;
+		this.requests = new HashMap<>();
 	}
 
 	public void init() {
@@ -96,61 +107,104 @@ public class GnawApplication extends GnawApplicationInterface {
 		return true;
 	}
 
-	@Override
 	public Response requestProfile(String address) {
 		Request profileRequest = new Request(RequestIdentifier.GET_PROFILE,
 				this.source.getProfile().getName());
 		return this.transmissionClient.startConnection(address, profileRequest);
 	}
 
-	@Override
 	public Response requestSharedFiles(String address) {
 		Request filesRequest = new Request(RequestIdentifier.GET_SHARED_FILES,
 				this.source.getProfile().getName());
 		return this.transmissionClient.startConnection(address, filesRequest);
 	}
 
-	@Override
 	public Response sendMessage(String address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public Response sendOffer(String address, SharedFile file) {
 		Request fileOffer = new Request(RequestIdentifier.OFFER, this.source
 				.getProfile().getName());
 		fileOffer.setFileName(file.getName());
-		return this.transmissionClient.startConnection(address, fileOffer);
+		String uuid = UUID.randomUUID().toString();
+		fileOffer.setToken(uuid);
+		Response response = this.transmissionClient.startConnection(address,
+				fileOffer);
+		this.requests.put(uuid,
+				file.getPath() + File.separator + file.getName());
+		return response;
 	}
 
-	@Override
-	public Response sendOfferResponse(String address, boolean accept) {
+	public Response sendOfferResponse(String address, boolean accept,
+			String filename) {
 		Request offerResponse = new Request(RequestIdentifier.RESPONSE,
 				this.source.getProfile().getName());
 		if (accept) {
+			String uuid = UUID.randomUUID().toString();
 			offerResponse.setAction(Action.ACCEPT);
-			offerResponse.setToken(UUID.randomUUID().toString());
+			offerResponse.setToken(uuid);
+			this.requests.put(uuid, filename);
 		} else {
 			offerResponse.setAction(Action.REJECT);
 		}
 		return this.transmissionClient.startConnection(address, offerResponse);
 	}
 
-	@Override
 	public Response sendSearchRequest(String address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public Response sendSearchResult(String address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void sendFile(String address, String filePath) {
-		// TODO Auto-generated method stub		
+	public Response sendPushRequest(String address, String filename) {
+		Request pushResponse = new Request(RequestIdentifier.PUSH, this.source
+				.getProfile().getName());
+		File file = new File(filename);
+		pushResponse.setFileSize(file.length());
+		return this.transmissionClient.startConnection(address, pushResponse);
+	}
+
+	public void sendFile(String address, String filename,
+			TransmissionProgressInterface listener) {
+		Socket socket = null;
+
+		try {
+			socket = new Socket(address, 4444);
+			File file = new File(filename);
+
+			long length = file.length();
+			byte[] bytes = new byte[(int) length];
+
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			BufferedOutputStream out = new BufferedOutputStream(
+					socket.getOutputStream());
+
+			int count, i = 0;
+
+			while ((count = bis.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+				i++;
+				listener.setProgress((int) (100 * i / length));
+			}
+
+			out.flush();
+			out.close();
+			fis.close();
+			bis.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -79,7 +79,7 @@ public class Request {
 		this.parameters.put("file-name", name);
 	}
 
-	public void setFileSize(int bytes) {
+	public void setFileSize(long bytes) {
 		if (this.parameters == null) {
 			this.parameters = new HashMap<String, String>();
 		}
@@ -121,11 +121,11 @@ public class Request {
 		return this.parameters.get("file-name");
 	}
 
-	public int getFileSize() {
+	public long getFileSize() {
 		if (this.parameters == null) {
 			return -1;
 		}
-		return Integer.parseInt(this.parameters.get("file-size"));
+		return Long.parseLong(this.parameters.get("file-size"));
 	}
 
 	public Action getAction() {

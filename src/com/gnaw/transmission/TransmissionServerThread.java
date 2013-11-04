@@ -4,8 +4,12 @@
  */
 package com.gnaw.transmission;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -27,8 +31,8 @@ public class TransmissionServerThread extends Thread {
 	private DataSourceInterface application;
 	private static final Gson gson = new Gson();
 	private boolean readStream = false;
-	private int size = 0;
-	
+	private long size = 0;
+
 	public TransmissionServerThread(Socket socket,
 			DataSourceInterface application) {
 		super("KKMultiServerThread");
@@ -52,6 +56,31 @@ public class TransmissionServerThread extends Thread {
 			out.println(response);
 
 			if (readStream) {
+				InputStream is = null;
+				FileOutputStream fos = null;
+				BufferedOutputStream bos = null;
+				int bufferSize = socket.getReceiveBufferSize();
+				try {
+					fos = new FileOutputStream("/tmp/" + request.getFileName());
+					bos = new BufferedOutputStream(fos);
+					is = socket.getInputStream();
+				} catch (FileNotFoundException ex) {
+					System.out.println("File not found. ");
+				}
+
+				byte[] bytes = new byte[bufferSize];
+
+				int count, i = 0;
+
+				while ((count = is.read(bytes)) > 0) {
+					bos.write(bytes, 0, count);
+					i++;
+					application.setProgress((int) (100 * i / size));
+				}
+
+				bos.flush();
+				bos.close();
+				is.close();
 			}
 
 			out.close();
@@ -170,7 +199,7 @@ public class TransmissionServerThread extends Thread {
 		}
 		return response;
 	}
-	
+
 	private Response processSearch() {
 		boolean delivered = this.application.deliverSearchRequest();
 		Response response = new Response();
