@@ -26,7 +26,9 @@ public class TransmissionServerThread extends Thread {
 	private Socket socket = null;
 	private DataSourceInterface application;
 	private static final Gson gson = new Gson();
-
+	private boolean readStream = false;
+	private int size = 0;
+	
 	public TransmissionServerThread(Socket socket,
 			DataSourceInterface application) {
 		super("KKMultiServerThread");
@@ -42,8 +44,16 @@ public class TransmissionServerThread extends Thread {
 					socket.getInputStream()));
 			String inputLine;
 			inputLine = in.readLine();
+
 			Request request = gson.fromJson(inputLine, Request.class);
-			out.println(gson.toJson(executeRequest(request)));
+			request.setAddress(this.socket.getInetAddress().getHostAddress());
+
+			String response = gson.toJson(executeRequest(request));
+			out.println(response);
+
+			if (readStream) {
+			}
+
 			out.close();
 			in.close();
 			socket.close();
@@ -69,11 +79,16 @@ public class TransmissionServerThread extends Thread {
 		case MESSAGE:
 			return this.processMessage();
 		case OFFER:
-			break;
+			return this.processOffer(request);
 		case RESPONSE:
-			break;
+			return this.processOfferResonse(request);
+		case PUSH:
+			return this.processPush(request);
 		case SEARCH:
-
+			break;
+		case RESULT:
+			break;
+		default:
 			break;
 		}
 		return null;
@@ -115,8 +130,8 @@ public class TransmissionServerThread extends Thread {
 		return response;
 	}
 
-	private Response processOffer() {
-		boolean delivered = this.application.deliverOffer();
+	private Response processOffer(Request request) {
+		boolean delivered = this.application.deliverOffer(request);
 		Response response = new Response();
 		if (delivered) {
 			response.setMessage("Delivered");
@@ -128,8 +143,8 @@ public class TransmissionServerThread extends Thread {
 		return response;
 	}
 
-	private Response processOfferResonse() {
-		boolean delivered = this.application.deliverOfferResponse();
+	private Response processOfferResonse(Request request) {
+		boolean delivered = this.application.deliverOfferResponse(request);
 		Response response = new Response();
 		if (delivered) {
 			response.setMessage("Delivered");
@@ -141,6 +156,21 @@ public class TransmissionServerThread extends Thread {
 		return response;
 	}
 
+	private Response processPush(Request request) {
+		boolean confirm = this.application.deliverPushRequest(request);
+		Response response = new Response();
+		if (confirm) {
+			this.readStream = true;
+			this.size = request.getFileSize();
+			response.setMessage("Initiating transfer");
+			response.setCode(Response.MESSAGE_DELIVERED);
+		} else {
+			response.setMessage("Transfer not authorized");
+			response.setCode(Response.MESSAGE_NOT_DELIVERED);
+		}
+		return response;
+	}
+	
 	private Response processSearch() {
 		boolean delivered = this.application.deliverSearchRequest();
 		Response response = new Response();

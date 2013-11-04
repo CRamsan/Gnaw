@@ -4,7 +4,11 @@
  */
 package com.gnaw.transmission;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -64,6 +68,44 @@ public class TransmissionClient {
 					Level.SEVERE, null, ex);
 		}
 		return response;
+	}
+
+	public void sendFile(String address, String filepath) {
+		Socket socket = null;
+
+		try {
+			socket = new Socket(address, 5555);
+			
+			File file = new File(filepath);
+			// Get the size of the file
+			long length = file.length();
+			if (length > Integer.MAX_VALUE) {
+				System.out.println("File is too large.");
+			}
+			byte[] bytes = new byte[(int) length];
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			BufferedOutputStream out = new BufferedOutputStream(
+					socket.getOutputStream());
+
+			int count;
+
+			while ((count = bis.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+			}
+
+			out.flush();
+			out.close();
+			fis.close();
+			bis.close();
+			socket.close();
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void stopConnection() {

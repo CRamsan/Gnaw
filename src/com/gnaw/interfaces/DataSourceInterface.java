@@ -2,6 +2,7 @@ package com.gnaw.interfaces;
 
 import com.gnaw.Profile;
 import com.gnaw.models.SharedFile;
+import com.gnaw.request.Request;
 
 /**
  * @author cesar
@@ -106,9 +107,11 @@ public interface DataSourceInterface {
 
 	public boolean deliverMessage();
 
-	public boolean deliverOffer();
+	public boolean deliverOffer(Request request);
 
-	public boolean deliverOfferResponse();
+	public boolean deliverOfferResponse(Request request);
 
 	public boolean deliverSearchRequest();
+	
+	public boolean deliverPushRequest(Request request);
 }

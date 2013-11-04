@@ -5,15 +5,17 @@
 package com.gnaw;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import com.gnaw.discovery.BeaconClient;
 import com.gnaw.discovery.BeaconServer;
-import com.gnaw.discovery.event.BroadcastingEndEvent;
 import com.gnaw.discovery.event.BroadcastingEndEventListener;
 import com.gnaw.discovery.event.ClientFoundEventListener;
 import com.gnaw.interfaces.DataSourceInterface;
 import com.gnaw.interfaces.GnawApplicationInterface;
+import com.gnaw.models.SharedFile;
 import com.gnaw.request.Request;
+import com.gnaw.request.Request.Action;
 import com.gnaw.request.Request.RequestIdentifier;
 import com.gnaw.response.Response;
 import com.gnaw.transmission.TransmissionClient;
@@ -96,15 +98,15 @@ public class GnawApplication extends GnawApplicationInterface {
 
 	@Override
 	public Response requestProfile(String address) {
-		Request profileRequest = new Request();
-		profileRequest.setRequest(RequestIdentifier.GET_PROFILE.toString());
+		Request profileRequest = new Request(RequestIdentifier.GET_PROFILE,
+				this.source.getProfile().getName());
 		return this.transmissionClient.startConnection(address, profileRequest);
 	}
 
 	@Override
 	public Response requestSharedFiles(String address) {
-		Request filesRequest = new Request();
-		filesRequest.setRequest(RequestIdentifier.GET_SHARED_FILES.toString());
+		Request filesRequest = new Request(RequestIdentifier.GET_SHARED_FILES,
+				this.source.getProfile().getName());
 		return this.transmissionClient.startConnection(address, filesRequest);
 	}
 
@@ -115,15 +117,24 @@ public class GnawApplication extends GnawApplicationInterface {
 	}
 
 	@Override
-	public Response sendOffer(String address) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response sendOffer(String address, SharedFile file) {
+		Request fileOffer = new Request(RequestIdentifier.OFFER, this.source
+				.getProfile().getName());
+		fileOffer.setFileName(file.getName());
+		return this.transmissionClient.startConnection(address, fileOffer);
 	}
 
 	@Override
-	public Response sendOfferResponse(String address) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response sendOfferResponse(String address, boolean accept) {
+		Request offerResponse = new Request(RequestIdentifier.RESPONSE,
+				this.source.getProfile().getName());
+		if (accept) {
+			offerResponse.setAction(Action.ACCEPT);
+			offerResponse.setToken(UUID.randomUUID().toString());
+		} else {
+			offerResponse.setAction(Action.REJECT);
+		}
+		return this.transmissionClient.startConnection(address, offerResponse);
 	}
 
 	@Override
@@ -136,5 +147,10 @@ public class GnawApplication extends GnawApplicationInterface {
 	public Response sendSearchResult(String address) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void sendFile(String address, String filePath) {
+		// TODO Auto-generated method stub		
 	}
 }
