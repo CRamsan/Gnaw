@@ -1,1 +1,10 @@
+com.gnaw
+com.gnaw.chord.service
 com.gnaw.chord.service.impl
+com.gnaw.discovery
+com.gnaw.discovery.event
+com.gnaw.gui
+com.gnaw.interfaces
+com.gnaw.request
+com.gnaw.response
+com.gnaw.transmission
