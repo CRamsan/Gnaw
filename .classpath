@@ -7,5 +7,8 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Ayllu/libs/gson-2.2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/jdot/Gnaw/GnawRepo/libs/log4j-api-2.0-beta9.jar"/>
+	<classpathentry kind="lib" path="/home/jdot/Gnaw/GnawRepo/libs/log4j-core-2.0-beta9.jar"/>
+	<classpathentry kind="lib" path="log4j2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

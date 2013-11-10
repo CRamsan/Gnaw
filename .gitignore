@@ -9,3 +9,6 @@
 /build/
 
 javadoc
+
+# log4j2 files
+log4j2/logs

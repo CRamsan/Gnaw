@@ -8,6 +8,7 @@ package com.gnaw.gui;
 
 import com.gnaw.GnawApplication;
 import com.gnaw.Profile;
+import com.gnaw.chord.service.impl.ChordImpl;
 import com.gnaw.discovery.event.ClientFoundEvent;
 import com.gnaw.discovery.event.ClientFoundEventListener;
 import com.gnaw.interfaces.DataSourceInterface;
@@ -26,6 +27,10 @@ public class MainGui extends javax.swing.JFrame implements DataSourceInterface,
 	 */
 	public MainGui() {
 		initComponents();
+		
+		// <testing>
+		ChordImpl chord = new ChordImpl();
+		// </testing>
 	}
 
 	private void initComponents() {

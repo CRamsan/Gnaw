@@ -4,23 +4,27 @@
  */
 package com.gnaw.discovery;
 
-import com.gnaw.discovery.event.ClientFoundEventListener;
-import com.gnaw.discovery.event.ClientFoundEvent;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.gnaw.chord.service.impl.ChordImpl;
+import com.gnaw.discovery.event.ClientFoundEvent;
+import com.gnaw.discovery.event.ClientFoundEventListener;
 
 /**
  * 
  * @author cesar
  */
 public class BeaconClientThread extends Thread {
+	
+	private Logger logger;
 
 	protected MulticastSocket socket;
 	protected InetAddress group;
@@ -38,6 +42,9 @@ public class BeaconClientThread extends Thread {
 		this.socket = new MulticastSocket(4446);
 		this.group = InetAddress.getByName("224.0.113.0");
 		this.clientsFound = new Hashtable<>();
+		
+		// initialize logger
+		logger = LogManager.getLogger(ChordImpl.class.getName());
 	}
 
 	public void setListener(ArrayList<ClientFoundEventListener> listeners) {
@@ -51,8 +58,9 @@ public class BeaconClientThread extends Thread {
 		try {
 			this.socket.joinGroup(group);
 		} catch (IOException ex) {
-			Logger.getLogger(BeaconClientThread.class.getName()).log(
-					Level.SEVERE, null, ex);
+			logger.catching(ex);
+//			Logger.getLogger(BeaconClientThread.class.getName()).log(
+//					Level.SEVERE, null, ex);
 			return;
 		}
 		DatagramPacket packet;
@@ -70,13 +78,15 @@ public class BeaconClientThread extends Thread {
 				String received = new String(packet.getData());
 				this.clientsFound.put(packet.getAddress().getHostAddress(),
 						received);
-				System.out.println("Client found at: "
-						+ packet.getAddress().getHostAddress());
+//				System.out.println("Client found at: "
+//						+ packet.getAddress().getHostAddress());
+				logger.info("Client found at: " + packet.getAddress().getHostAddress());
 				fireClientFoundEvent(new ClientFoundEvent(packet.getAddress()
 						.getHostAddress()));
 			} catch (IOException ex) {
-				Logger.getLogger(BeaconClientThread.class.getName()).log(
-						Level.SEVERE, null, ex);
+				logger.catching(ex);
+//				Logger.getLogger(BeaconClientThread.class.getName()).log(
+//						Level.SEVERE, null, ex);
 				runFlag = false;
 			}
 
@@ -84,8 +94,9 @@ public class BeaconClientThread extends Thread {
 		try {
 			this.socket.leaveGroup(group);
 		} catch (IOException ex) {
-			Logger.getLogger(BeaconClientThread.class.getName()).log(
-					Level.SEVERE, null, ex);
+			logger.catching(ex);
+//			Logger.getLogger(BeaconClientThread.class.getName()).log(
+//					Level.SEVERE, null, ex);
 		}
 		this.socket.close();
 	}
@@ -95,8 +106,9 @@ public class BeaconClientThread extends Thread {
 		try {
 			this.socket.leaveGroup(group);
 		} catch (IOException ex) {
-			Logger.getLogger(BeaconClientThread.class.getName()).log(
-					Level.SEVERE, null, ex);
+			logger.catching(ex);
+//			Logger.getLogger(BeaconClientThread.class.getName()).log(
+//					Level.SEVERE, null, ex);
 		}
 		this.socket.close();
 	}

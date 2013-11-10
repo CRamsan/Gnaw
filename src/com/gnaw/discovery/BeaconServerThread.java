@@ -1,18 +1,20 @@
 package com.gnaw.discovery;
 
-import com.gnaw.discovery.event.BroadcastingEndEvent;
-import com.gnaw.discovery.event.BroadcastingEndEventListener;
-import com.gnaw.discovery.event.ClientFoundEvent;
-import com.gnaw.discovery.event.ClientFoundEventListener;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.gnaw.discovery.event.BroadcastingEndEvent;
+import com.gnaw.discovery.event.BroadcastingEndEventListener;
 
 public class BeaconServerThread extends Thread {
+	
+	private Logger logger;
 
     protected DatagramSocket socket = null;
     protected boolean runFlag = false;
@@ -27,6 +29,9 @@ public class BeaconServerThread extends Thread {
         super(name);
         this.socket = new DatagramSocket(4445);
         this.timeToLive = seconds;
+        
+     // initialize logger
+     logger = LogManager.getLogger(BeaconServerThread.class.getName());
     }
 
     public void setListener(ArrayList<BroadcastingEndEventListener> listeners) {
@@ -51,13 +56,17 @@ public class BeaconServerThread extends Thread {
                 packet = new DatagramPacket(buf, buf.length, group, 4446);
                 this.socket.send(packet);
                 counter--;
-                System.out.println("Pinged to address " + group.getHostAddress());
+                //System.out.println("Pinged to address " + group.getHostAddress());
+                logger.info("Pinged address: " + group.getHostAddress());
+                
                 Thread.sleep(1000);
             } catch (IOException e) {
-                Logger.getLogger(BeaconServerThread.class.getName()).log(Level.SEVERE, null, e);
+            	logger.catching(e);
+                //Logger.getLogger(BeaconServerThread.class.getName()).log(Level.SEVERE, null, e);
                 runFlag = false;
             } catch (InterruptedException ex) {
-                Logger.getLogger(BeaconServerThread.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(BeaconServerThread.class.getName()).log(Level.SEVERE, null, ex);
+            	logger.catching(ex);
                 runFlag = false;
             }
         }
