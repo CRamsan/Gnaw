@@ -10,11 +10,19 @@ import org.apache.logging.log4j.Logger;
 import com.gnaw.chord.service.Chord;
 import com.gnaw.chord.service.Key;
 
+/**
+ * Implementation of the Chord protocol.
+ * 
+ * @author Josh Tan
+ *
+ */
 public class ChordImpl implements Chord {
 	
 	private Logger logger;
 	
-	
+	/**
+	 * Default constructor.
+	 */
 	public ChordImpl() {
 		
 		// initialize logger

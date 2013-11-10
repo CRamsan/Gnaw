@@ -5,6 +5,12 @@ import com.gnaw.chord.service.Entry;
 import com.gnaw.chord.service.Node;
 import com.gnaw.chord.service.NodeSet;
 
+/**
+ * Implementation of a Chord node.
+ * 
+ * @author Josh Tan
+ *
+ */
 public class NodeImpl extends Node {
 	
 	private FingerTable fingertable;
