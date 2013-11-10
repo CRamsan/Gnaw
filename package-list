@@ -1,6 +1,10 @@
-com.cesarandres.ayllu
-com.cesarandres.ayllu.discovery
-com.cesarandres.ayllu.discovery.event
-com.cesarandres.ayllu.gui
-com.cesarandres.ayllu.transmission
+com.gnaw
+com.gnaw.chord.service
+com.gnaw.chord.service.impl
+com.gnaw.discovery
+com.gnaw.discovery.event
+com.gnaw.gui
+com.gnaw.interfaces
+com.gnaw.request
 com.gnaw.response
+com.gnaw.transmission
