@@ -14,8 +14,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.xml.ws.soap.AddressingFeature.Responses;
-
 import com.gnaw.discovery.BeaconClient;
 import com.gnaw.discovery.BeaconServer;
 import com.gnaw.discovery.event.BroadcastingEndEventListener;
@@ -46,8 +44,8 @@ public class GnawApplication {
 
 	public GnawApplication(DataSourceInterface source) {
 		this.source = source;
-		this.sendRequests = new HashMap<>();
-		this.receiveRequests = new HashMap<>();
+		this.sendRequests = new HashMap<String, String>();
+		this.receiveRequests = new HashMap<String, String>();
 	}
 
 	public void init() {

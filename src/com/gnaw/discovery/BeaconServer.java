@@ -11,7 +11,7 @@ public class BeaconServer implements BroadcastingEndEventSource {
 	protected ArrayList<BroadcastingEndEventListener> listeners;
 
 	public BeaconServer() {
-		this.listeners = new ArrayList<>();
+		this.listeners = new ArrayList<BroadcastingEndEventListener>();
 	}
 
 	public void startBroadcasting() throws IOException {

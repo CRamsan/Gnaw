@@ -37,7 +37,7 @@ public class BeaconClientThread extends Thread {
 		super(name);
 		this.socket = new MulticastSocket(4446);
 		this.group = InetAddress.getByName("224.0.113.0");
-		this.clientsFound = new Hashtable<>();
+		this.clientsFound = new Hashtable<String, String>();
 	}
 
 	public void setListener(ArrayList<ClientFoundEventListener> listeners) {

@@ -11,7 +11,7 @@ public class BeaconClient implements ClientFoundEventSource {
 	protected ArrayList<ClientFoundEventListener> listeners;
 
 	public BeaconClient() {
-		this.listeners = new ArrayList<>();
+		this.listeners = new ArrayList<ClientFoundEventListener>();
 	}
 
 	public void startListening() throws IOException {
