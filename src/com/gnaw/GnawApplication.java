@@ -160,51 +160,15 @@ public class GnawApplication {
 		return null;
 	}
 
-	public Response sendPushRequest(String address, String token) {
+	public Response sendPushRequest(String address, String token,
+			TransmissionProgressInterface listener) {
 		Request pushResponse = new Request(RequestIdentifier.PUSH, this.source
 				.getProfile().getName());
 		String filename = this.sendRequests.get(token);
 		File file = new File(filename);
 		pushResponse.setFileSize(file.length());
-		return this.transmissionClient.startConnection(address, pushResponse);
-	}
-
-	public void sendFile(String address, String token,
-			TransmissionProgressInterface listener) {
-		Socket socket = null;
-
-		try {
-			socket = new Socket(address, 4444);
-			String filename = this.sendRequests.get(token);
-			File file = new File(filename);
-
-			long length = file.length();
-			byte[] bytes = new byte[(int) length];
-
-			FileInputStream fis = new FileInputStream(file);
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			BufferedOutputStream out = new BufferedOutputStream(
-					socket.getOutputStream());
-
-			int count, i = 0;
-
-			while ((count = bis.read(bytes)) > 0) {
-				out.write(bytes, 0, count);
-				i++;
-				listener.setProgress((int) (100 * i / length));
-			}
-
-			out.flush();
-			out.close();
-			fis.close();
-			bis.close();
-			socket.close();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		pushResponse.setFileName(file.getName());
+		this.transmissionClient.setListener(listener);
+		return this.transmissionClient.startConnection(address, pushResponse, filename);
 	}
 }

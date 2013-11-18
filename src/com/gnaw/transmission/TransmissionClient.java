@@ -4,7 +4,11 @@
  */
 package com.gnaw.transmission;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.gnaw.interfaces.TransmissionProgressInterface;
 import com.gnaw.request.Request;
 import com.gnaw.response.Response;
 import com.google.gson.Gson;
@@ -27,11 +32,17 @@ public class TransmissionClient {
 	private PrintWriter out;
 	private BufferedReader in;
 	private static final Gson gson = new Gson();
+	private TransmissionProgressInterface listener;
 
 	public TransmissionClient() {
 	}
 
 	public Response startConnection(String address, Request request) {
+		return startConnection(address, request, null);
+	}
+
+	public Response startConnection(String address, Request request,
+			String filename) {
 		String data = gson.toJson(request);
 		Response response = null;
 		try {
@@ -51,6 +62,33 @@ public class TransmissionClient {
 		try {
 			inputLine = in.readLine();
 			response = gson.fromJson(inputLine, Response.class);
+
+			if (filename != null) {
+				File file = new File(filename);
+
+				long length = file.length();
+				byte[] bytes = new byte[(int) length];
+
+				FileInputStream fis = new FileInputStream(file);
+				BufferedInputStream bis = new BufferedInputStream(fis);
+				BufferedOutputStream out = new BufferedOutputStream(
+						kkSocket.getOutputStream());
+
+				int count, i = 0;
+
+				while ((count = bis.read(bytes)) > 0) {
+					out.write(bytes, 0, count);
+					i++;
+					listener.setProgress((int) (100 * i / length));
+				}
+
+				out.flush();
+				out.close();
+				fis.close();
+				bis.close();
+
+			}
+
 			in.close();
 			out.close();
 		} catch (IOException e) {
@@ -66,7 +104,10 @@ public class TransmissionClient {
 		return response;
 	}
 
-	
+	public void setListener(TransmissionProgressInterface listener) {
+		this.listener = listener;
+	}
+
 	public void stopConnection() {
 		try {
 			out.close();
