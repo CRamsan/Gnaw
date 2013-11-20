@@ -38,7 +38,7 @@ public class BeaconServerThread extends Thread {
         int counter = timeToLive;
         byte[] buf;
         this.runFlag = true;
-        while (this.runFlag && counter > 0) {
+        while (this.runFlag && counter != 0) {
             try {
 
                 // figure out response
@@ -50,7 +50,9 @@ public class BeaconServerThread extends Thread {
                 DatagramPacket packet;
                 packet = new DatagramPacket(buf, buf.length, group, 4446);
                 this.socket.send(packet);
-                counter--;
+                if(counter != -1){
+                    counter--;                	
+                }
                 System.out.println("Pinged to address " + group.getHostAddress());
                 Thread.sleep(1000);
             } catch (IOException e) {

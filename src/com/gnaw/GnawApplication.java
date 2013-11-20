@@ -4,13 +4,8 @@
  */
 package com.gnaw;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -169,6 +164,14 @@ public class GnawApplication {
 		pushResponse.setFileSize(file.length());
 		pushResponse.setFileName(file.getName());
 		this.transmissionClient.setListener(listener);
-		return this.transmissionClient.startConnection(address, pushResponse, filename);
+		return this.transmissionClient.startConnection(address, pushResponse,
+				filename);
+	}
+
+	public void saveSettings(String key, String value) {
+		Settings sett = new Settings();
+		sett.open();
+		sett.setValue(key, value);
+		sett.close();
 	}
 }
