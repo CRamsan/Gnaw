@@ -41,6 +41,7 @@ public class GnawApplication {
 		this.source = source;
 		this.sendRequests = new HashMap<String, String>();
 		this.receiveRequests = new HashMap<String, String>();
+		
 	}
 
 	public void init() {
@@ -173,5 +174,13 @@ public class GnawApplication {
 		sett.open();
 		sett.setValue(key, value);
 		sett.close();
+	}
+	
+	public String retrieveSettings(String key){
+		Settings sett = new Settings();
+		sett.open();
+		String result = sett.getValue(key);
+		sett.close();
+		return result;
 	}
 }
