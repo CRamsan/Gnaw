@@ -134,8 +134,7 @@ public class GnawApplication {
 
 	public Response sendOfferResponse(String address, boolean accept,
 			String filename, String token) {
-		Request offerResponse = new Request(RequestIdentifier.RESPONSE,
-				this.source.getProfile().getName());
+		Request offerResponse = new Request(RequestIdentifier.RESPONSE,	this.source.getProfile().getName());
 		if (accept) {
 			offerResponse.setAction(Action.ACCEPT);
 			offerResponse.setToken(token);
