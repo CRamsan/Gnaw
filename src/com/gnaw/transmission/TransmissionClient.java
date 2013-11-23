@@ -82,6 +82,11 @@ public class TransmissionClient {
 					listener.setProgress((int) (100 * i / length));
 				}
 
+//				for(; i <= length; i++){ 
+//					out.write(bis.read());
+//					listener.setProgress((int) (100 * i / length));
+//				}
+				listener.setProgress(-1);
 				out.flush();
 				out.close();
 				fis.close();

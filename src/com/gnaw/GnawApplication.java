@@ -41,7 +41,7 @@ public class GnawApplication {
 		this.source = source;
 		this.sendRequests = new HashMap<String, String>();
 		this.receiveRequests = new HashMap<String, String>();
-		
+
 	}
 
 	public void init() {
@@ -52,8 +52,7 @@ public class GnawApplication {
 		this.transmissionServer.startListening();
 	}
 
-	public boolean startBroadcasting(BroadcastingEndEventListener listener,
-			int seconds) {
+	public boolean startBroadcasting(BroadcastingEndEventListener listener, int seconds) {
 		try {
 			this.beaconServer.startBroadcasting(seconds);
 			this.beaconServer.addBroadcastingEndEventListener(listener);
@@ -104,14 +103,12 @@ public class GnawApplication {
 	}
 
 	public Response requestProfile(String address) {
-		Request profileRequest = new Request(RequestIdentifier.GET_PROFILE,
-				this.source.getProfile().getName());
+		Request profileRequest = new Request(RequestIdentifier.GET_PROFILE, this.source.getProfile().getName());
 		return this.transmissionClient.startConnection(address, profileRequest);
 	}
 
 	public Response requestSharedFiles(String address) {
-		Request filesRequest = new Request(RequestIdentifier.GET_SHARED_FILES,
-				this.source.getProfile().getName());
+		Request filesRequest = new Request(RequestIdentifier.GET_SHARED_FILES, this.source.getProfile().getName());
 		return this.transmissionClient.startConnection(address, filesRequest);
 	}
 
@@ -121,20 +118,17 @@ public class GnawApplication {
 	}
 
 	public Response sendOffer(String address, SharedFile file) {
-		Request fileOffer = new Request(RequestIdentifier.OFFER, this.source
-				.getProfile().getName());
+		Request fileOffer = new Request(RequestIdentifier.OFFER, this.source.getProfile().getName());
 		fileOffer.setFileName(file.getName());
 		String uuid = UUID.randomUUID().toString();
 		fileOffer.setToken(uuid);
-		Response response = this.transmissionClient.startConnection(address,
-				fileOffer);
+		Response response = this.transmissionClient.startConnection(address, fileOffer);
 		this.sendRequests.put(uuid, file.getPath());
 		return response;
 	}
 
-	public Response sendOfferResponse(String address, boolean accept,
-			String filename, String token) {
-		Request offerResponse = new Request(RequestIdentifier.RESPONSE,	this.source.getProfile().getName());
+	public Response sendOfferResponse(String address, boolean accept, String filename, String token) {
+		Request offerResponse = new Request(RequestIdentifier.RESPONSE, this.source.getProfile().getName());
 		if (accept) {
 			offerResponse.setAction(Action.ACCEPT);
 			offerResponse.setToken(token);
@@ -155,17 +149,14 @@ public class GnawApplication {
 		return null;
 	}
 
-	public Response sendPushRequest(String address, String token,
-			TransmissionProgressInterface listener) {
-		Request pushResponse = new Request(RequestIdentifier.PUSH, this.source
-				.getProfile().getName());
+	public Response sendPushRequest(String address, String token, TransmissionProgressInterface listener) {
+		Request pushResponse = new Request(RequestIdentifier.PUSH, this.source.getProfile().getName());
 		String filename = this.sendRequests.get(token);
 		File file = new File(filename);
 		pushResponse.setFileSize(file.length());
 		pushResponse.setFileName(file.getName());
 		this.transmissionClient.setListener(listener);
-		return this.transmissionClient.startConnection(address, pushResponse,
-				filename);
+		return this.transmissionClient.startConnection(address, pushResponse, filename);
 	}
 
 	public void saveSettings(String key, String value) {
@@ -174,8 +165,8 @@ public class GnawApplication {
 		sett.setValue(key, value);
 		sett.close();
 	}
-	
-	public String retrieveSettings(String key){
+
+	public String retrieveSettings(String key) {
 		Settings sett = new Settings();
 		sett.open();
 		String result = sett.getValue(key);

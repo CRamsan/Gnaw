@@ -77,7 +77,14 @@ public class TransmissionServerThread extends Thread {
 					i++;
 					application.setProgress((int) (100 * i / size));
 				}
-
+				
+//				for(; i <= bufferSize; i++){
+//					bos.write(is.read());
+//					application.setProgress(100 * (int) (i / size));
+//				}
+				
+				application.setProgress(-1);
+				
 				bos.flush();
 				bos.close();
 				is.close();
