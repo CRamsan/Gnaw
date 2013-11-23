@@ -71,13 +71,13 @@ public class TransmissionServerThread extends Thread {
 				byte[] bytes = new byte[bufferSize];
 
 				int count, i = 0;
-
 				while ((count = is.read(bytes)) > 0) {
 					bos.write(bytes, 0, count);
 					i++;
 					application.setProgress((int) (100 * i / size));
 				}
-				
+
+//				int i=1;
 //				for(; i <= bufferSize; i++){
 //					bos.write(is.read());
 //					application.setProgress(100 * (int) (i / size));

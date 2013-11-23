@@ -74,18 +74,22 @@ public class TransmissionClient {
 				BufferedOutputStream out = new BufferedOutputStream(
 						kkSocket.getOutputStream());
 
-				int count, i = 0;
-
-				while ((count = bis.read(bytes)) > 0) {
-					out.write(bytes, 0, count);
-					i++;
-					listener.setProgress((int) (100 * i / length));
-				}
-
-//				for(; i <= length; i++){ 
-//					out.write(bis.read());
+//				int count, i = 0;
+//				while ((count = bis.read(bytes)) > 0) {
+//					out.write(bytes, 0, count);
+//					i++;
 //					listener.setProgress((int) (100 * i / length));
 //				}
+
+				int i = 1;
+				listener.setProgress(0);
+				for(; i <= length; i++){ 
+					out.write(bis.read());
+					if(i % 1000 == 0){
+						listener.setProgress((int) (100 * i / length));
+					}
+				}
+				listener.setProgress(100);
 				listener.setProgress(-1);
 				out.flush();
 				out.close();
