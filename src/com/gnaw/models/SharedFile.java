@@ -2,6 +2,10 @@ package com.gnaw.models;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 
 public class SharedFile {
 	private int size;
@@ -55,6 +59,25 @@ public class SharedFile {
 
 	public ArrayList<SharedFile> getSharedFiles() {
 		return sharedFiles;
+	}
+
+	public List<String> getSharedFilepaths() {
+
+		List<String> sharedFilenames = new ArrayList<String>();
+		File sharedFile = new File(path);
+		
+		if (sharedFile.isDirectory()) {
+			for (File file : FileUtils.listFiles(sharedFile, null, true)) {
+				sharedFilenames.add(file.getAbsolutePath());
+			}
+
+		} else {
+			
+			sharedFilenames.add(sharedFile.getAbsolutePath());
+		}
+		
+		return sharedFilenames;
+
 	}
 
 	public void setSharedFiles(ArrayList<SharedFile> sharedFiles) {
