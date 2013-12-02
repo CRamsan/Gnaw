@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.gnaw;
 
 import java.io.File;
@@ -87,9 +83,6 @@ public class GnawApplication {
 
 		// initialize Chord network
 		PropertiesLoader.loadPropertyFile();
-		//		Properties props = System.getProperties();
-		//		props.list(System.out);
-		//		System.out.println(PropertiesLoader.STANDARD_PROPERTY_FILE);
 		String protocol = URL.KNOWN_PROTOCOLS.get(URL.SOCKET_PROTOCOL);
 
 		if (isMaster) {
@@ -112,7 +105,6 @@ public class GnawApplication {
 
 		try {
 			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), port);
-//			System.out.println(localUrlString);
 		} catch (UnknownHostException e) {
 			throw new RuntimeException (e);
 		}
@@ -130,9 +122,6 @@ public class GnawApplication {
 		} catch (ServiceException e) {
 			throw new RuntimeException("Could not create DHT !", e);
 		}
-		
-		
-
 
 	}
 
@@ -196,15 +185,6 @@ public class GnawApplication {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		Chord blah = new ChordImpl(); TODO: FAILS IF ONLY ONE NODE
-//		blah.cre
-
-//		StringKey key;
-//		ChordCallbackImpl callback = new ChordCallbackImpl();
-//
-//		key = new StringKey(filepath);
-//		chord.insert(key, filepath, callback);
 
 	}
 
@@ -220,12 +200,6 @@ public class GnawApplication {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		StringKey key;
-//		ChordCallbackImpl callback = new ChordCallbackImpl();
-//
-//		key = new StringKey(filepath);
-//		chord.remove(key, filepath, callback);
 
 	}
 
