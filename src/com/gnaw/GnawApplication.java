@@ -56,7 +56,7 @@ public class GnawApplication {
 	 * @param source data source for the application
 	 */
 	public GnawApplication(DataSourceInterface source) {
-		this(source, true, DEFAULT_MASTER_HOST, DEFAULT_MASTER_PORT);
+		this(source, false, DEFAULT_MASTER_HOST, DEFAULT_MASTER_PORT);
 	}
 
 	public GnawApplication(DataSourceInterface source, boolean isMaster) {
@@ -79,26 +79,25 @@ public class GnawApplication {
 		this.beaconClient = new BeaconClient();
 		this.transmissionClient = new TransmissionClient();
 		this.transmissionServer = new TransmissionServer(this.source);
-		//this.transmissionServer.startListening(); // TODO: uncomment after testing Chord
 
 		// initialize Chord network
 		PropertiesLoader.loadPropertyFile();
-		String protocol = URL.KNOWN_PROTOCOLS.get(URL.SOCKET_PROTOCOL);
-
-		if (isMaster) {
-			createChordNetwork(protocol, port);
-		} else {
-			joinChordNetwork(protocol, host, port);
-		}		
-
 	}
 
+	public void createChordNetwork() {
+		createChordNetwork(getProtocol(),  DEFAULT_MASTER_PORT);
+	}
+
+	public String getProtocol(){
+		return URL.KNOWN_PROTOCOLS.get(URL.SOCKET_PROTOCOL);
+	}
+	
 	/**
 	 * Create a new Chord network.
 	 * @param protocol network protocol to use
 	 * @param port port to use for the master node
 	 */
-	private void createChordNetwork(String protocol, int port) {
+	public void createChordNetwork(String protocol, int port) {
 
 		String localUrlString;
 		URL localUrl = null;		
@@ -125,13 +124,21 @@ public class GnawApplication {
 
 	}
 
+	public void stopChordNetwork() {
+		try {
+			chord.leave();
+		} catch (ServiceException e) {
+			throw new RuntimeException("Error while leaving the network!", e);
+		}
+	}
+	
 	/**
 	 * Join an existing Chord network.
 	 * @param protocol network protocol to use
 	 * @param bootstrapHost host of the node to bootstrap to
 	 * @param bootstrapPort port of the node to bootstrap to
 	 */
-	private void joinChordNetwork(String protocol, String bootstrapHost, int bootstrapPort) {
+	public void joinChordNetwork(String protocol, String bootstrapHost, int bootstrapPort) {
 
 		int localPort;
 		try {
