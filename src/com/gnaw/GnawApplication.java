@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import com.gnaw.chord.ChordCallbackImpl;
 import com.gnaw.chord.FileHashKey;
-import com.gnaw.chord.StringKey;
+import com.gnaw.chord.FilenameKey;
 import com.gnaw.discovery.BeaconClient;
 import com.gnaw.discovery.BeaconServer;
 import com.gnaw.discovery.event.BroadcastingEndEventListener;
@@ -244,17 +244,12 @@ public class GnawApplication {
 
 	public boolean searchFile(String term) {
 		
-		FileHashKey key;
+		FilenameKey key;
 		ChordCallbackImpl callback = new ChordCallbackImpl();
 
-		try {
-			key = new FileHashKey(term);
-			chord.retrieve(key, callback);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		key = new FilenameKey(term);
+		chord.retrieve(key, callback);
+
 		return true;
 	}
 
