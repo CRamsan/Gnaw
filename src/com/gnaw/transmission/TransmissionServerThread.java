@@ -6,6 +6,7 @@ package com.gnaw.transmission;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,8 +61,11 @@ public class TransmissionServerThread extends Thread {
 				FileOutputStream fos = null;
 				BufferedOutputStream bos = null;
 				int bufferSize = socket.getReceiveBufferSize();
+				
+				File tobeCreated = new File(System.getProperty("java.io.tmpdir") + request.getFileName());
+				
 				try {
-					fos = new FileOutputStream("/tmp/" + request.getFileName());
+					fos = new FileOutputStream(tobeCreated);
 					bos = new BufferedOutputStream(fos);
 					is = socket.getInputStream();
 				} catch (FileNotFoundException ex) {
@@ -82,6 +86,22 @@ public class TransmissionServerThread extends Thread {
 //					bos.write(is.read());
 //					application.setProgress(100 * (int) (i / size));
 //				}
+				String destination = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "Gnaw";
+				File downloadFolder = new File(destination);
+				if(!downloadFolder.exists()){
+					downloadFolder.mkdirs();
+				}
+				
+				String newName = destination + File.separator + tobeCreated.getName();
+				
+				int index  = 2;
+				while(new File(newName).exists()){
+					newName = destination + File.separator + tobeCreated.getName() + "." + index;
+					index++;
+				}
+				
+				
+				tobeCreated.renameTo(new File(newName));
 				
 				application.setProgress(-1);
 				
