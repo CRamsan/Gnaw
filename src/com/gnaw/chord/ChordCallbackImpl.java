@@ -10,7 +10,15 @@ public class ChordCallbackImpl implements ChordCallback {
 	
 
 	public void retrieved(Key key, Set<Serializable> entries, Throwable t) {
-		// TODO
+		if (t == null) {
+			System.out.println("Successfully found: ");
+			for(Serializable i : entries){
+				System.out.println(i);
+			}
+		} else {
+			System.err.println("Error while searching for " + key);
+			t.printStackTrace();
+		}
 	}
 	
 	public void inserted(Key key, Serializable entry, Throwable t) {

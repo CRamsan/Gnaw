@@ -79,7 +79,8 @@ public class GnawApplication {
 		this.beaconClient = new BeaconClient();
 		this.transmissionClient = new TransmissionClient();
 		this.transmissionServer = new TransmissionServer(this.source);
-
+		this.transmissionServer.startListening();
+		
 		// initialize Chord network
 		PropertiesLoader.loadPropertyFile();
 	}
@@ -174,39 +175,24 @@ public class GnawApplication {
 		chord = new ChordImpl();
 		try {
 			chord.join(localUrl, bootstrapUrl);
+			
+			
+			
 		} catch (ServiceException e) {
 			throw new RuntimeException("Could not create DHT !", e);
 		}
 
 	}
 
-	public void shareFile(String filepath) {
+	public void shareFile(SharedFile file) {
 
-		FileHashKey key;
-		ChordCallbackImpl callback = new ChordCallbackImpl();
-
-		try {
-			key = new FileHashKey(filepath);
-			chord.insert(key, filepath, callback);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		file.insert(chord);
 
 	}
 
-	public void unshareFile(String filepath) {
+	public void unshareFile(SharedFile file) {
 
-		FileHashKey key;
-		ChordCallbackImpl callback = new ChordCallbackImpl();
-
-		try {
-			key = new FileHashKey(filepath);
-			chord.remove(key, filepath, callback);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		file.remove(chord);
 
 	}
 
@@ -257,6 +243,18 @@ public class GnawApplication {
 	}
 
 	public boolean searchFile(String term) {
+		
+		FileHashKey key;
+		ChordCallbackImpl callback = new ChordCallbackImpl();
+
+		try {
+			key = new FileHashKey(term);
+			chord.retrieve(key, callback);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return true;
 	}
 

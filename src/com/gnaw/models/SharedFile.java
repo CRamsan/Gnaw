@@ -2,10 +2,17 @@ package com.gnaw.models;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import javax.sql.rowset.serial.SerialException;
+import javax.sql.rowset.serial.SerialJavaObject;
+
 import org.apache.commons.io.FileUtils;
+
+import com.gnaw.chord.ChordCallbackImpl;
+
+import de.uniba.wiai.lspi.chord.console.command.entry.Key;
+import de.uniba.wiai.lspi.chord.service.AsynChord;
 
 public class SharedFile {
 	private int size;
@@ -109,4 +116,26 @@ public class SharedFile {
 		this.path = path;
 	}
 
+	public void insert(AsynChord chord){
+		try {
+			chord.insert(new Key(path + File.separator + name), new SerialJavaObject(name), new ChordCallbackImpl());
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
+		for(SharedFile file : this.sharedFiles){
+			file.insert(chord);
+		}
+	}
+	
+	public void remove(AsynChord chord){
+		try {
+			chord.remove(new Key(path + File.separator + name), new SerialJavaObject(name), new ChordCallbackImpl());
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
+		for(SharedFile file : this.sharedFiles){
+			file.remove(chord);
+		}
+	}
+	
 }
