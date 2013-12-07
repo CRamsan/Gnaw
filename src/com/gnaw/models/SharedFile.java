@@ -118,18 +118,20 @@ public class SharedFile {
 
 	public void insert(AsynChord chord){
 		try {
-			chord.insert(new Key(path + File.separator + name), new SerialJavaObject(name), new ChordCallbackImpl());
+			chord.insert(new Key(name), new SerialJavaObject(name), new ChordCallbackImpl());
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
-		for(SharedFile file : this.sharedFiles){
-			file.insert(chord);
+		if(this.sharedFiles != null){
+			for(SharedFile file : this.sharedFiles){
+				file.insert(chord);
+			}
 		}
 	}
 	
 	public void remove(AsynChord chord){
 		try {
-			chord.remove(new Key(path + File.separator + name), new SerialJavaObject(name), new ChordCallbackImpl());
+			chord.remove(new Key(name), new SerialJavaObject(name), new ChordCallbackImpl());
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}

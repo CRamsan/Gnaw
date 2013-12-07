@@ -9,6 +9,8 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.UUID;
 
+import javax.swing.JTextArea;
+
 import com.gnaw.chord.ChordCallbackImpl;
 import com.gnaw.chord.FileHashKey;
 import com.gnaw.chord.FilenameKey;
@@ -242,10 +244,10 @@ public class GnawApplication {
 		return false;
 	}
 
-	public boolean searchFile(String term) {
+	public boolean searchFile(String term, JTextArea textArea) {
 		
 		FilenameKey key;
-		ChordCallbackImpl callback = new ChordCallbackImpl();
+		ChordCallbackImpl callback = new ChordCallbackImpl(textArea);
 
 		key = new FilenameKey(term);
 		chord.retrieve(key, callback);
