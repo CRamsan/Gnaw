@@ -16,6 +16,7 @@ import javax.swing.JTextArea;
 
 import com.gnaw.chord.ChordCallbackImpl;
 import com.gnaw.chord.FilenameKey;
+import com.gnaw.chord.SharedFileEntry;
 import com.gnaw.discovery.BeaconClient;
 import com.gnaw.discovery.BeaconServer;
 import com.gnaw.discovery.event.BroadcastingEndEventListener;
@@ -54,6 +55,8 @@ public class GnawApplication {
 	private HashMap<String, String> receiveRequests;
 
 	private AsynChord chord;
+	private String hostAddress;
+	private int hostPort;
 
 	/**
 	 * Default constructor.
@@ -108,7 +111,10 @@ public class GnawApplication {
 		URL localUrl = null;		
 
 		try {
-			localUrlString = createUrl(protocol, getHostAddress(), port);
+			hostAddress = getHostAddress();
+			hostPort = port;
+			localUrlString = createUrl(protocol, hostAddress, hostPort);
+			
 		} catch (UnknownHostException e) {
 			throw new RuntimeException (e);
 		} catch (Exception e) {
@@ -148,9 +154,8 @@ public class GnawApplication {
 	 */
 	public void joinChordNetwork(String protocol, String bootstrapHost, int bootstrapPort) {
 
-		int localPort;
 		try {
-			localPort = getPort();
+			hostPort = getPort();
 		} catch (IOException e) {
 			throw new RuntimeException("Error while trying to find free port!", e);
 		}
@@ -159,7 +164,8 @@ public class GnawApplication {
 		URL localUrl = null;
 
 		try {
-			localUrlString = createUrl(protocol, getHostAddress(), localPort);
+			hostAddress = getHostAddress();
+			localUrlString = createUrl(protocol, hostAddress, hostPort);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			throw new RuntimeException("Error create local URL string!", e);
@@ -193,16 +199,28 @@ public class GnawApplication {
 
 		ChordCallbackImpl callback = new ChordCallbackImpl();
 
+		// create key
 		FilenameKey key = new FilenameKey(filename);
-		chord.insert(key, filename, callback);
+		
+		// create entry
+		SharedFileEntry entry = new SharedFileEntry(filename, hostAddress, hostPort);
+		
+		// insert (key, entry)
+		chord.insert(key, entry, callback);
 	}
 
 	public void unshareFile(String filename) {
 
 		ChordCallbackImpl callback = new ChordCallbackImpl();
 
+		// create key
 		FilenameKey key = new FilenameKey(filename);
-		chord.remove(key, filename, callback);
+		
+		// create entry
+		SharedFileEntry entry = new SharedFileEntry(filename, hostAddress, hostPort);
+		
+		// remove (key, entry)
+		chord.remove(key, entry, callback);
 	}
 
 	public boolean startBroadcasting(BroadcastingEndEventListener listener, int seconds) {
