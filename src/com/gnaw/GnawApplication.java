@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ import java.util.UUID;
 import javax.swing.JTextArea;
 
 import com.gnaw.chord.ChordCallbackImpl;
-import com.gnaw.chord.FileHashKey;
 import com.gnaw.chord.FilenameKey;
 import com.gnaw.discovery.BeaconClient;
 import com.gnaw.discovery.BeaconServer;
@@ -38,7 +38,7 @@ import de.uniba.wiai.lspi.chord.service.impl.ChordImpl;
 
 /**
  * 
- * @author cesar
+ * @author Cesar Ramirez, Josh Tan
  */
 public class GnawApplication {
 
@@ -104,17 +104,16 @@ public class GnawApplication {
 	 */
 	public void createChordNetwork(String protocol, int port) {
 
-		String localUrlString = "";
+		String localUrlString;
 		URL localUrl = null;		
 
 		try {
-//			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), port);
 			localUrlString = createUrl(protocol, getHostAddress(), port);
 		} catch (UnknownHostException e) {
 			throw new RuntimeException (e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new RuntimeException("Error create local URL string!", e);
 		}
 
 		try {
@@ -124,9 +123,9 @@ public class GnawApplication {
 		}
 
 		chord = new ChordImpl();
+		
 		try {
 			chord.create(localUrl);
-			
 		} catch (ServiceException e) {
 			throw new RuntimeException("Could not create DHT !", e);
 		}
@@ -156,15 +155,14 @@ public class GnawApplication {
 			throw new RuntimeException("Error while trying to find free port!", e);
 		}
 
-		String localUrlString = "";
+		String localUrlString;
 		URL localUrl = null;
 
 		try {
-//			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), localPort);
 			localUrlString = createUrl(protocol, getHostAddress(), localPort);
-			
 		} catch (Exception e) {
-			System.err.println("I don't even..");
+			System.err.println(e.getMessage());
+			throw new RuntimeException("Error create local URL string!", e);
 		}
 
 		try {
@@ -183,9 +181,7 @@ public class GnawApplication {
 
 		chord = new ChordImpl();
 		try {
-			chord.join(localUrl, bootstrapUrl);
-			
-			
+			chord.join(localUrl, bootstrapUrl);	
 			
 		} catch (ServiceException e) {
 			throw new RuntimeException("Could not create DHT !", e);
@@ -357,45 +353,39 @@ public class GnawApplication {
 		return protocol + "://" + host + ':' + port + '/';
 	}
 	
-	private String getHostAddress() throws Exception {
-		try{
-			System.err.println("=== OS: " + System.getProperty("os.name"));
-			if(System.getProperty("os.name").equals("Linux")){
-				Enumeration<NetworkInterface> e =
-						NetworkInterface.getNetworkInterfaces();
-				while(e.hasMoreElements()) {
-					NetworkInterface netface =
-							(NetworkInterface)e.nextElement();
-					if
-					(!netface.getName().equals("lo")){ 
-						Enumeration<InetAddress> e2 =
-								netface.getInetAddresses();
-						while (e2.hasMoreElements()){
-							e2.nextElement();
-							InetAddress ip =
-									(InetAddress) e2.nextElement();
-							System.err.println("NOOOOOOOO: " + ip.toString().substring(1));
-							return
-									ip.toString().substring(1);
-						}
-						
-//						e2.nextElement();
-//						while (e2.hasMoreElements()){
-//						InetAddress ip =
-//						(InetAddress) e2.nextElement();
-//						System.err.println("NOOOOOOOO: " + ip.toString().substring(1));
-//						return
-//						ip.toString().substring(1);
-//						}
+	/**
+	 * Retrieve the IP address of the host. In the case the host OS is not Linux,
+	 * InetAddress.getHostAddress() is simply returned. If the host OS is Linux,
+	 * additional steps are performed to avoid returning the loopback address
+	 * (e.g. 127.0.0.1).
+	 * 
+	 * Source:
+	 * http://sourceforge.net/p/open-chord/bugs/2/
+	 * 
+	 * @return the IP address of the host
+	 * @throws UnknownHostException
+	 * @throws SocketException
+	 */
+	private String getHostAddress() throws UnknownHostException, SocketException {
+
+		if (System.getProperty("os.name").equals("Linux")) {
+			Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+			while (e.hasMoreElements()) {
+				NetworkInterface netface = (NetworkInterface) e.nextElement();
+				if (!netface.getName().equals("lo")) { 
+					Enumeration<InetAddress> e2 = netface.getInetAddresses();
+					while (e2.hasMoreElements()) {
+						e2.nextElement();
+						InetAddress ip = (InetAddress) e2.nextElement();
+						return ip.toString().substring(1);
 					}
 				}
-				throw new Exception("Unknow Exception");
-			}else
-				return
-						java.net.InetAddress.getLocalHost().getHostAddress();
-		}
-		catch(Exception e){
-			throw new Exception("Could not create url for this host!", e);
+			}
+			
+			throw new UnknownHostException("Unable to retrieve IP address for Linux host.");
+			
+		} else {
+			return java.net.InetAddress.getLocalHost().getHostAddress();
 		}
 	}
 }
