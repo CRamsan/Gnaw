@@ -21,11 +21,15 @@ public class ChordCallbackImpl implements ChordCallback {
 	
 	public void retrieved(Key key, Set<Serializable> entries, Throwable t) {
 		if (t == null) {
-			System.out.println("Successfully found: ");
 			textArea.setText(null);
-			for(Serializable i : entries){
-				System.out.println(i);
-				textArea.append(i.toString());
+			if (!entries.isEmpty()) {
+				System.out.println("Successfully found: ");
+				for(Serializable i : entries){
+					System.out.println(i);
+					textArea.append(i.toString());
+				}
+			} else {
+				System.out.println("Search results are empty.");
 			}
 		} else {
 			System.err.println("Error while searching for " + key);
