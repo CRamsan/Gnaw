@@ -18,7 +18,7 @@ public class SharedFileEntry implements Serializable {
 
 	@Override
 	public String toString() {
-		return filename + "(" + ownerHost + ":" + ownerPort + ")";
+		return filename + " [" + ownerHost + ":" + ownerPort + "]";
 	}
 
 	public String getFilename() {

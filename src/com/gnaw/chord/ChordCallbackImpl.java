@@ -26,7 +26,7 @@ public class ChordCallbackImpl implements ChordCallback {
 				System.out.println("Successfully found: ");
 				for(Serializable i : entries){
 					System.out.println(i);
-					textArea.append(i.toString());
+					textArea.append(i.toString() + "\n");
 				}
 			} else {
 				System.out.println("Search results are empty.");
