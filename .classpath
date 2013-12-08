@@ -19,7 +19,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/log4j.jar"/>
-	<classpathentry kind="lib" path="libs/openchord_1.0.5.jar">
+	<classpathentry kind="lib" path="libs/openchord_1.0.5.jar" sourcepath="/home/jdot/Gnaw/open-chord/src">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/gnaw-core/libs/openchord_1.0.5-javadoc.jar!/doc"/>
 		</attributes>

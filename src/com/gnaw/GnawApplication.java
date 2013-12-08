@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -102,13 +104,17 @@ public class GnawApplication {
 	 */
 	public void createChordNetwork(String protocol, int port) {
 
-		String localUrlString;
+		String localUrlString = "";
 		URL localUrl = null;		
 
 		try {
-			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), port);
+//			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), port);
+			localUrlString = createUrl(protocol, getHostAddress(), port);
 		} catch (UnknownHostException e) {
 			throw new RuntimeException (e);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		try {
@@ -150,14 +156,15 @@ public class GnawApplication {
 			throw new RuntimeException("Error while trying to find free port!", e);
 		}
 
-		String localUrlString;
+		String localUrlString = "";
 		URL localUrl = null;
 
 		try {
-			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), localPort);
+//			localUrlString = createUrl(protocol, InetAddress.getLocalHost().getHostAddress(), localPort);
+			localUrlString = createUrl(protocol, getHostAddress(), localPort);
 			
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			System.err.println("I don't even..");
 		}
 
 		try {
@@ -348,5 +355,47 @@ public class GnawApplication {
 	 */
 	private String createUrl(String protocol, String host, int port) {
 		return protocol + "://" + host + ':' + port + '/';
+	}
+	
+	private String getHostAddress() throws Exception {
+		try{
+			System.err.println("=== OS: " + System.getProperty("os.name"));
+			if(System.getProperty("os.name").equals("Linux")){
+				Enumeration<NetworkInterface> e =
+						NetworkInterface.getNetworkInterfaces();
+				while(e.hasMoreElements()) {
+					NetworkInterface netface =
+							(NetworkInterface)e.nextElement();
+					if
+					(!netface.getName().equals("lo")){ 
+						Enumeration<InetAddress> e2 =
+								netface.getInetAddresses();
+						while (e2.hasMoreElements()){
+							e2.nextElement();
+							InetAddress ip =
+									(InetAddress) e2.nextElement();
+							System.err.println("NOOOOOOOO: " + ip.toString().substring(1));
+							return
+									ip.toString().substring(1);
+						}
+						
+//						e2.nextElement();
+//						while (e2.hasMoreElements()){
+//						InetAddress ip =
+//						(InetAddress) e2.nextElement();
+//						System.err.println("NOOOOOOOO: " + ip.toString().substring(1));
+//						return
+//						ip.toString().substring(1);
+//						}
+					}
+				}
+				throw new Exception("Unknow Exception");
+			}else
+				return
+						java.net.InetAddress.getLocalHost().getHostAddress();
+		}
+		catch(Exception e){
+			throw new Exception("Could not create url for this host!", e);
+		}
 	}
 }
