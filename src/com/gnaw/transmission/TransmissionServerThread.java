@@ -62,7 +62,8 @@ public class TransmissionServerThread extends Thread {
 				BufferedOutputStream bos = null;
 				int bufferSize = socket.getReceiveBufferSize();
 				
-				File tobeCreated = new File(System.getProperty("java.io.tmpdir") + request.getFileName());
+				File tobeCreated = new File(System.getProperty("java.io.tmpdir") +
+						File.separator + request.getFileName());
 				
 				try {
 					fos = new FileOutputStream(tobeCreated);
