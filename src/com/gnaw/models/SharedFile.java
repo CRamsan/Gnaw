@@ -115,29 +115,48 @@ public class SharedFile {
 	public void setPath(String path) {
 		this.path = path;
 	}
+	
+	public List<String> getSharedFilenames() {
 
-	public void insert(AsynChord chord){
-		try {
-			chord.insert(new Key(name), new SerialJavaObject(name), new ChordCallbackImpl());
-		} catch (SerialException e) {
-			e.printStackTrace();
-		}
-		if(this.sharedFiles != null){
-			for(SharedFile file : this.sharedFiles){
-				file.insert(chord);
+		List<String> sharedFilenames = new ArrayList<String>();
+		
+		if (path != null) {
+			File sharedFile = new File(path);
+
+			if (sharedFile.isDirectory()) {
+				for (File file : FileUtils.listFiles(sharedFile, null, true)) {
+					sharedFilenames.add(file.getName());
+				}
+			} else {
+				sharedFilenames.add(sharedFile.getName());
 			}
 		}
+
+		return sharedFilenames;
 	}
-	
-	public void remove(AsynChord chord){
-		try {
-			chord.remove(new Key(name), new SerialJavaObject(name), new ChordCallbackImpl());
-		} catch (SerialException e) {
-			e.printStackTrace();
-		}
-		for(SharedFile file : this.sharedFiles){
-			file.remove(chord);
-		}
-	}
+
+//	public void insert(AsynChord chord){
+//		try {
+//			chord.insert(new Key(name), new SerialJavaObject(name), new ChordCallbackImpl());
+//		} catch (SerialException e) {
+//			e.printStackTrace();
+//		}
+//		if(this.sharedFiles != null){
+//			for(SharedFile file : this.sharedFiles){
+//				file.insert(chord);
+//			}
+//		}
+//	}
+//	
+//	public void remove(AsynChord chord){
+//		try {
+//			chord.remove(new Key(name), new SerialJavaObject(name), new ChordCallbackImpl());
+//		} catch (SerialException e) {
+//			e.printStackTrace();
+//		}
+//		for(SharedFile file : this.sharedFiles){
+//			file.remove(chord);
+//		}
+//	}
 	
 }

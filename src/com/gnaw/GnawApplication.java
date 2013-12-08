@@ -188,17 +188,21 @@ public class GnawApplication {
 		}
 
 	}
+	
+	public void shareFile(String filename) {
 
-	public void shareFile(SharedFile file) {
+		ChordCallbackImpl callback = new ChordCallbackImpl();
 
-		file.insert(chord);
-
+		FilenameKey key = new FilenameKey(filename);
+		chord.insert(key, filename, callback);
 	}
 
-	public void unshareFile(SharedFile file) {
+	public void unshareFile(String filename) {
 
-		file.remove(chord);
+		ChordCallbackImpl callback = new ChordCallbackImpl();
 
+		FilenameKey key = new FilenameKey(filename);
+		chord.remove(key, filename, callback);
 	}
 
 	public boolean startBroadcasting(BroadcastingEndEventListener listener, int seconds) {
