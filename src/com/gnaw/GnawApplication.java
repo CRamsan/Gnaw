@@ -2,6 +2,7 @@ package com.gnaw;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
@@ -397,9 +398,13 @@ public class GnawApplication {
 				if (!netface.getName().equals("lo")) { 
 					Enumeration<InetAddress> e2 = netface.getInetAddresses();
 					while (e2.hasMoreElements()) {
-						e2.nextElement();
 						InetAddress ip = (InetAddress) e2.nextElement();
-						return ip.toString().substring(1);
+						if (!(ip instanceof Inet6Address)) {
+							return ip.toString().substring(1);
+						}
+//						e2.nextElement();
+//						InetAddress ip = (InetAddress) e2.nextElement();
+//						return ip.toString().substring(1);
 					}
 				}
 			}
