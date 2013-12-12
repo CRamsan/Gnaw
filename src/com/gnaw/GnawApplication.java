@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.swing.JTextArea;
+import javax.swing.DefaultListModel;
 
 import com.gnaw.chord.ChordCallbackImpl;
 import com.gnaw.chord.FilenameKey;
@@ -270,7 +270,7 @@ public class GnawApplication {
 		return false;
 	}
 
-	public boolean searchFile(String term, JTextArea textArea) {
+	public boolean searchFile(String term, DefaultListModel textArea) {
 		
 		FilenameKey key;
 		ChordCallbackImpl callback = new ChordCallbackImpl(textArea);

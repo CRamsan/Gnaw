@@ -3,16 +3,16 @@ package com.gnaw.chord;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.swing.JTextArea;
+import javax.swing.DefaultListModel;
 
 import de.uniba.wiai.lspi.chord.service.ChordCallback;
 import de.uniba.wiai.lspi.chord.service.Key;
 
 public class ChordCallbackImpl implements ChordCallback {
 
-	private JTextArea textArea;
+	private DefaultListModel textArea;
 	
-	public ChordCallbackImpl(JTextArea textArea){
+	public ChordCallbackImpl(DefaultListModel textArea){
 		this.textArea = textArea;
 	}
 	
@@ -21,12 +21,12 @@ public class ChordCallbackImpl implements ChordCallback {
 	
 	public void retrieved(Key key, Set<Serializable> entries, Throwable t) {
 		if (t == null) {
-			textArea.setText(null);
+			textArea.clear();
 			if (!entries.isEmpty()) {
 				System.out.println("Successfully found: ");
 				for(Serializable i : entries){
 					System.out.println(i);
-					textArea.append(i.toString() + "\n");
+					textArea.addElement(i.toString());
 				}
 			} else {
 				System.out.println("Search results are empty.");
